@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+        }, false);
+    </script>
+
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/default.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
+    <script defer>hljs.configure({ cssSelector: "code", languages: ["console"] }); hljs.highlightAll(); hljs.initLineNumbersOnLoad();</script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css" integrity="sha384-vKruj+a13U8yHIkAyGgK1J3ArTLzrFGBbBc0tDp4ad/EyewESeXE/Iv67Aj8gKZ0" crossorigin="anonymous">
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.js" integrity="sha384-PwRUT/YqbnEjkZO0zZxNqcxACrXe+j766U2amXcgMg5457rve2Y7I6ZJSm2A0mS4" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <!-- retire o atributo output para, ao copiar uma fórmula, copiar tanto no formato html quanto no formato mathml, entretanto, a fórmula sai duplicada -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.2/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous" onload="renderMathInElement(document.body,{delimiters:[{left: '$', right: '$', display: false}],output:'html'});"></script>
+
+    <style>
+        img {
+            max-width: 100%;
+        }
+
+        .center {
+            text-align: center;
+        }
+
+        table.custom,
+        table.custom td,
+        table.custom th {
+            border: 1px solid black;
+            border-collapse: collapse;
+            margin-left: auto;
+            margin-right: auto;
+            text-align: center;
+        }
+
+        ol.excs {
+            padding-inline-start: 0em;
+            counter-reset: excs;
+            list-style: none;
+        }
+
+        ol.excs>li::before {
+            counter-increment: excs;
+            content: counters(excs, ".") ". ";
+        }
+
+        ol.excs>li {
+            /* Change this to adjust the line color and thickness */
+            border-left: 2px solid #000;
+            /* Optional: Add padding to create some space between the bar and content */
+            padding-left: 10px;
+
+            margin-block-start: 1em;
+            margin-block-end: 1em;
+        }
+
+        td.hljs-ln-numbers {
+            color: #ccc;
+            border-right: 1px solid #999;
+            padding-right: 5px;
+        }
+
+        td.hljs-ln-code {
+            padding-left: 10px;
+        }
+    </style>
+</head>
+
+<div id="2-objects-in-python">
+    <h1>Objetos em Python</h1>
+    <div id="creating-python-classes">
+        <h2>Criando classes em Python</h2>
+        <p>O Python procura ser menos <i>boilerplate</i>, como é demonstrado pelo 'hello world' em apenas uma linha de código.</p>
+        <pre><code class="python"># first_class.py
+class MyFirstClass:
+    pass</code></pre>
+        <p>Palavra-chave <code>class</code>, nome da classe e dois pontos. Palavra-chave <code>pass</code> para indicar um bloco vazio de código, já que o Python utiliza espaços e não chaves para delimitar blocos de código. O PEP 8 recomenda o uso de <code>PascalCase</code> para o nome das classes e 4 espaços para indentação. Para executar o código e depois entrar no interpretador interativo, execute <code class="inline">python -i first_class.py</code>.</p>
+        <p>Os endereços de memória demonstram que existem dois objetos distintos envolvidos.</p>
+
+        <h3>Adicionando atributos</h3>
+        <p>Podemos definir atributos arbitrários em um objeto instanciado usando a <b>notação de ponto</b>:</p>
+        <pre><code class="python"># point.py
+class Point:
+    pass
+
+p1 = Point()
+p2 = Point()
+p1.x = 5
+p1.y = 4
+p2.x = 3
+p2.y = 6
+print(p1.x, p1.y)
+print(p2.x, p2.y)</code></pre>
+
+        <h3>Adicionando um método</h3>
+        <p>Vamos criar um método:</p>
+        <pre><code class="python">class Point:
+    def reset(self):
+        self.x = 0
+        self.y = 0
+
+p = Point()
+p.reset()
+print(p.x, p.y)</code></pre>
+        <p>O argumento <code>self</code> de um método é uma referência ao objeto no qual o método está sendo invocado. Esse argumento é convencionalmente chamado de <code>self</code>.</p>
+        <p>Observe que quando chamamos o método <code>p.reset()</code>, não precisamos passar o argumento <code>self</code> para ele. O Python cuida disso automaticamente para nós. Ele sabe que estamos chamando um método no objeto <code>p</code> e automaticamente passa esse objeto para o método.</p>
+        <p>No entanto, o método é apenas uma função que está em uma classe. Em vez de chamar o método no objeto, poderíamos invocar a função na classe, passando explicitamente nosso objeto como argumento <code>self</code>:</p>
+        <pre><code class="python">>>> p = Point()
+>>> Point.reset(p)
+>>> print(p.x, p.y)</code></pre>
+        <p>O que acontece se esquecermos de incluir o argumento <code>self</code> em nossa definição de classe? O Python apresentará uma mensagem de erro.</p>
+
+        <h3>Mais argumentos</h3>
+        <p>Vamos adicionar um novo método que nos permite mover um ponto para uma posição arbitrária, não apenas para a origem. Também podemos incluir um método que aceita outro objeto Point como entrada e retorna a distância entre eles:</p>
+
+        <pre><code class="python">class Point:
+    def move(self, x, y):
+        self.x = x
+        self.y = y
+
+    def reset(self):
+        self.move(0, 0)
+
+    def calculate_distance(self, other_point):
+        return ((self.x - other_point.x) ** 2 + (self.y - other_point.y) ** 2) ** (1/2)
+
+
+point1 = Point()
+point2 = Point()
+
+point1.reset()
+point2.move(5, 0)
+print(point2.calculate_distance(point1))
+assert point2.calculate_distance(point1) == point1.calculate_distance(point2)
+point1.move(3, 4)
+print(point1.calculate_distance(point2))
+print(point1.calculate_distance(point1))</code></pre>
+        <p>A função <code>assert</code> é uma ferramenta simples de teste; o programa apresentará um erro se a afirmação após o <code>assert</code> for avaliada como <code>Falso</code>. Neste caso, usamos para garantir que a distância seja a mesma, independentemente de qual ponto chamou o método calculate_distance do outro ponto.</p>
+
+        <h3>Inicializando o objeto</h3>
+        <p>Se não definirmos explicitamente as posições <code>x</code> e <code>y</code> em nosso objeto <code>Point</code>, seja usando o método move ou acessando-as diretamente, teremos um ponto com defeito e sem posição real. O que acontecerá quando tentarmos acessá-lo?</p>
+        <p>Todas as mensagens de erro seguem esse padrão.</p>
+        <p>Poderíamos definir valores padrão para esses atributos. A maioria das linguagens de programação orientada a objetos possui o conceito de um <b>construtor</b>, um método especial que cria e inicializa o objeto quando ele é criado. No Python, existem dois tipos de métodos para construir objetos: <code>__new__</code> e <code>__init__</code>. A menos que você esteja fazendo algo muito exótico, usará o método de inicialização muito mais comum, <code>__init__</code>.</p>
+        <p>Métodos e variáveis ‘mágicas’ no Python começam e terminam com duplos sublinhados. Não identifique os seus próprios assim!</p>
+        <pre><code class="python">class Point:
+    def __init__(self, x, y):
+        self.move(x, y)
+
+    def move(self, x, y):
+        self.x = x
+        self.y = y
+
+    def reset(self):
+        self.move(0, 0)
+
+# Construindo um ponto
+point = Point(3, 5)
+print(point.x, point.y)</code></pre>
+        <p>Agora só podemos construir um ponto passando os argumentos <code>x</code> e <code>y</code>.</p>
+        <p>Se não quisermos tornar os dois argumentos obrigatórios, podemos usar a mesma sintaxe que as funções Python usam para fornecer argumentos padrão.</p>
+        <pre><code class="python">class Point:
+    def __init__(self, x=0, y=0):
+        self.move(x, y)</code></pre>
+
+        <h3>Explicando-se</h3>
+        <p>O Python suporta documentar sua API por meio do uso de docstrings. Cada classe, função ou cabeçalho de método pode ter uma string Python padrão como a primeira linha após a definição (a linha que termina com dois pontos). Para docstrings de uma linha, use apóstrofos (<code>'</code>) ou aspas (<code>"</code>). Para docstrings de várias linhas, use três apóstrofos (<code>'''</code>) ou três aspas (<code>"""</code>).</p>
+        <p>Uma docstring deve resumir clara e concisamente o objetivo da classe ou método que está descrevendo. Deve explicar quaisquer parâmetros cujo uso não seja imediatamente óbvio e também é um bom lugar para incluir exemplos curtos de como usar a API. Quaisquer avisos ou problemas que um usuário desavisado da API deva estar ciente também devem ser observados.</p>
+        <pre><code class="python">class Point:
+    "Representa um ponto em coordenadas geométricas bidimensionais."
+
+    def __init__(self, x=0, y=0):
+        """Inicializa a posição de um novo ponto. As coordenadas x e y
+           podem ser especificadas. Se não forem, o
+           ponto assume a origem."""
+        self.move(x, y)
+
+    def move(self, x, y):
+        "Move o ponto para uma nova localização no espaço 2D."
+        self.x = x
+        self.y = y
+
+    def reset(self):
+        "Redefine o ponto para a origem geométrica: 0, 0."
+        self.move(0, 0)
+
+    def calculate_distance(self, other_point):
+        """Calcula a distância deste ponto para um segundo
+        ponto passado como parâmetro.
+
+        Esta função usa o Teorema de Pitágoras para calcular
+        a distância entre os dois pontos. A distância é
+        retornada como um número float."""
+
+        return (
+            (self.x - other_point.x) ** 2
+            + (self.y - other_point.y) ** 2
+        ) ** (1/2)
+
+
+# como usar:
+point1 = Point()
+point2 = Point()
+
+point1.reset()
+point2.move(5, 0)
+print(point2.calculate_distance(point1))
+assert point2.calculate_distance(point1) == point1.calculate_distance(point2)
+point1.move(3, 4)
+print(point1.calculate_distance(point2))
+print(point1.calculate_distance(point1))</code></pre>
+        <p>Tente carregar este arquivo no interpretador interativo. Em seguida, digite <code>help(Point)</code> para ver a documentação da classe.</p>
+
+        <h3>Exercícios de Fixação</h3>
+        <ol class="excs">
+            <li>Criando uma classe simples
+                <p>Crie uma classe Python chamada <code>Rectangle</code> com as seguintes características:</p>
+                <ol type="1">
+                    <li>A classe deve ter dois atributos: <code>width</code> e <code>height</code>, ambos inicializados como 0.</li>
+                    <li>Implemente um método chamado <code>set_dimensions</code> que recebe dois argumentos <code>w</code> e <code>h</code> e define os atributos <code>width</code> e <code>height</code> com os valores de <code>w</code> e <code>h</code>.</li>
+                    <li>Implemente um método chamado <code>get_area</code> que calcula e retorna a área do retângulo (área = width * height).</li>
+                </ol>
+                <p>Desenvolva um script para testar a classe <code>Rectangle</code>, instanciando objetos e chamando seus métodos.</p>
+            </li>
+            <li>Usando a classe <code>Point</code>
+                <p>Dada a classe <code>Point</code> fornecida na seção, use-a para realizar as seguintes tarefas:</p>
+                <ol type="1">
+                    <li>Crie dois objetos Point chamados <code>point1</code> e <code>point2</code>.</li>
+                    <li>Mova <code>point1</code> para a posição (5, 7) e <code>point2</code> para a posição (-2, 3).</li>
+                    <li>Calcule a distância entre <code>point1</code> e <code>point2</code> usando o método <code>calculate_distance</code> e imprima o resultado.</li>
+                    <li>Redefina <code>point1</code> para a origem (0, 0) usando o método <code>reset</code>.</li>
+                    <li>Calcule a distância entre <code>point1</code> e <code>point2</code> novamente e imprima o resultado.</li>
+                </ol>
+            </li>
+            <li>Documentando uma nova classe
+                <p>Crie uma nova classe chamada <code>Employee</code> com as seguintes características:</p>
+                <ol type="1">
+                    <li>A classe deve ter dois atributos: <code>name</code> (uma string) e <code>salary</code> (um float).</li>
+                    <li>Implemente um método chamado <code>raise_salary</code> que recebe um valor percentual e aumenta o salário do funcionário de acordo.</li>
+                    <li>Implemente um método chamado <code>get_info</code> que retorna uma string contendo o nome do funcionário e o salário atual.</li>
+                </ol>
+                <p>Adicione docstrings à classe <code>Employee</code> e seus métodos para fornecer explicações claras de seu propósito e uso. Use docstrings de uma linha e de várias linhas para diferentes métodos.</p>
+            </li>
+            <li>Usando a classe Employee
+                <p>Crie dois objetos <code>Employee</code> com as seguintes informações:</p>
+                <ol type="1">
+                    <li>Funcionário 1: Nome - “John Doe”, Salário - 50000.0</li>
+                    <li>Funcionário 2: Nome - “Jane Smith”, Salário - 65000.0</li>
+                </ol>
+                <p>Execute as seguintes ações:</p>
+                <ol type="1">
+                    <li>Imprima as informações de ambos os funcionários usando o método <code>get_info</code>.</li>
+                    <li>Dê um aumento de 10% para os dois funcionários usando o método <code>raise_salary</code>.</li>
+                    <li>Imprima novamente as informações atualizadas de ambos os funcionários.</li>
+                </ol>
+            </li>
+            <li>Entendendo métodos de classe
+                <p>Considere o trecho de código a seguir usando a classe <code>Point</code>:</p>
+                <pre><code class="python">p1 = Point()
+p2 = Point()
+
+p1.x = 2
+p1.y = 3
+p2.x = 5
+p2.y = 7
+
+distance = p1.calculate_distance(p2)
+print("Distância entre p1 e p2:", distance)
+</code></pre>
+                <p>Explique como o método <code>calculate_distance</code> funciona e como ele calcula a distância entre dois pontos. Descreva o papel do parâmetro <code>self</code> no método e por que ele não é passado explicitamente ao chamar o método.</p>
+            </li>
+        </ol>
+    </div>
+
+    <div id="modules-and-packages">
+        <h2>Módulos e pacotes</h2>
+
+        <p>Em programas pequenos, colocamos nossas classes e funções em um arquivo e um pouco de script no final do arquivo. Conforme nosso projeto cresce, organizamos o código em <b>módulos</b>, que são simplesmente arquivos Python. Se um módulo precisa de um <b>recurso</b> de outro módulo, ele deve <b>importar</b> esse recurso. Um recurso pode ser uma classe, método ou variável.</p>
+        <p>Por exemplo, em um sistema de e-commerce, poderíamos ter o módulo <code>database.py</code> contendo classes e funções relacionadas ao banco de dados. Outro módulo, chamado <code>products.py</code>, responsável por operações com produtos, poderia usar a classe <code>Database</code> de <code>database.py</code> através de uma das seguintes alternativas:</p>
+        <ul>
+            <li>
+                <pre><code class="python">import database
+db = database.Database()
+# Do queries on db
+            </code></pre>
+            </li>
+            <li>
+                <pre><code class="python">from database import Database
+db = Database()
+# Do queries on db
+            </code></pre>
+            </li>
+            <li>
+                <pre><code class="python">from database import Database as DB
+db = DB()
+# Do queries on db
+            </code></pre>
+            </li>
+            <li>
+                <pre><code class="python">from database import Database, Query
+db = Database()
+q = Query()
+# Do queries on db with q
+            </code></pre>
+            </li>
+        </ul>
+
+        <p>Essas variações permitem que importemos: o módulo inteiro; recurso(s) específico(s); ou recurso(s) renomeado(s) para evitar conflitos de <i>namespace</i>.</p>
+
+        <p>Você pode importar todos os recursos de um módulo com <code>from database import *</code>, mas isso não é recomendado. Isso dificulta a identificação de onde um recurso veio, aumenta a possibilidade de conflitos de nomes com recursos que você nem vai utilizar e, pior, também importa as importações indiretas do módulo importado.</p>
+
+        <p>Easter Egg do Python: execute <code>import this</code> para ver um poema com princípios e piadas do Python.</p>
+
+        <h3>Organizando módulos</h3>
+
+        <p>Conforme um projeto cresce, é útil organizar módulos em <b>pacotes</b>, que são pastas que agregam vários módulos, ou até mesmo outros pacotes, dentro delas. Para que uma pasta seja considerada um pacote, você deve colocar um arquivo <code>__init__.py</code> dentro dela, caso contrário, não será possível importar módulos dessa pasta.</p>
+        <p>Suponha a seguinte estrutura de pastas:</p>
+        <pre>root/
+    main.py
+    ecommerce/
+        __init__.py
+        database.py
+        products.py
+        payments/
+            __init__.py
+            square.py
+            stripe.py
+</pre>
+        <p>Existem dois modos de importação: importação <b>absoluta</b> e importação <b>relativa</b>.</p>
+
+        <h4>Importações absolutas</h4>
+        <p>Importações absolutas especificam o caminho completo para o recurso que está sendo importado. Por exemplo, para importar a classe <code>Product</code> do módulo <code>products</code> no pacote <code>ecommerce</code>, poderíamos usar qualquer uma das seguintes sintaxes:</p>
+        <ul>
+            <li>
+                <pre><code class="python">import ecommerce.products
+produto = ecommerce.products.Product()</code></pre>
+            </li>
+            <li>
+                <pre><code class="python">from ecommerce import products
+produto = products.Product()</code></pre>
+            </li>
+            <li>
+                <pre><code class="python">from ecommerce.products import Product
+produto = Product()</code></pre>
+            </li>
+        </ul>
+        <p>Essas instruções funcionarão de qualquer módulo. Entretanto, especialmente ao importar de uma pasta pai, você precisa executar o Python da pasta raiz do projeto com a opção <code>-m</code>. Por exemplo, supondo que você esteja na pasta <code>root</code>, para executar <code>square.py</code>:</p>
+        <pre><code>python3 -m ecommerce.payments.square</code></pre>
+        <p>Você também pode carregar pacotes da pasta de pacotes instalados do Python ou da variável de ambiente <code>PYTHONPATH</code>.</p>
+        <p>A escolha da sintaxe depende do gosto pessoal e das necessidades específicas da aplicação. Se muitas classes ou funções de um módulo forem necessárias, pode ser útil importar o módulo inteiro. Se apenas algumas classes ou funções forem necessárias, elas podem ser importadas diretamente.</p>
+
+        <h4>Importações relativas</h4>
+
+        <p>Você também pode importar recursos a partir do caminho atual, parecido com a navegação de pastas pelo terminal. Basta começar a importação com um ponto, que representa o pacote atual. Por exemplo, para importar <code>Database</code> de dentro de <code>products.py</code>:</p>
+        <pre><code class="python">from .database import Database</code></pre>
+        <p>Cada ponto adicional acessa a próxima pasta pai. Por exemplo, para importar <code>Database</code> de dentro de <code>square.py</code>:</p>
+        <pre><code class="python">from ..database import Database</code></pre>
+
+        <p>Também é possível importar código diretamente de pacotes usando o arquivo <code>__init__.py</code>. Esse arquivo pode conter recursos disponíveis como parte do pacote. Por exemplo, se o arquivo <code>ecommerce/__init__.py</code> contiver a linha <code>from .database import db</code>, poderíamos acessar o atributo <code>db</code> usando a seguinte importação: <code>from ecommerce import db</code>.</p>
+        <p>No entanto, geralmente é recomendado evitar colocar muito código no arquivo <code>__init__.py</code>, pois isso pode dificultar a localização de onde o código é declarado e pode levar a comportamentos inesperados.</p>
+    </div>
+    <div id="organizing-module-content">
+        <h2>Organizando o conteúdo do módulo</h2>
+
+        <p>Dentro de um módulo, podemos especificar variáveis, classes ou funções. Essas podem ser usadas para armazenar estados globais sem conflitos de namespace. Por exemplo, poderíamos criar um único objeto de banco de dados disponível globalmente no módulo de banco de dados, definindo uma classe <code>Database</code> e instanciando-a no nível do módulo:</p>
+        <pre><code class="python">class Database:
+    # implementação do banco de dados
+    pass
+
+database = Database()
+</code></pre>
+        <p>Esse objeto pode então ser importado e usado em outros módulos com <code>from ecommerce.database import database</code>. No entanto, essa abordagem pode ter desvantagens, pois o objeto do banco de dados é criado imediatamente quando o módulo é importado, o que pode nem sempre ser desejável (inicialização lenta ou informações indisponíveis). Para adiar a criação do banco de dados até que ele seja realmente necessário, poderíamos definir uma função <code>initialize_database</code>:</p>
+        <pre><code class="python">class Database:
+    # implementação do banco de dados
+    pass
+
+database = None
+
+def initialize_database():
+    global database
+    database = Database()
+</code></pre>
+        <p>A palavra-chave <code>global</code> é usada para especificar que a variável <code>database</code> dentro da função se refere à variável de nível de módulo. Isso nos permite adiar a criação do banco de dados até que ele seja realmente necessário.</p>
+        <p>Todo o código de nível de módulo é executado imediatamente quando o módulo é importado. No entanto, o código dentro de uma função ou método não é executado até que a função seja chamada. Isso pode ser útil para organizar o código de inicialização e evitar a execução não intencional ao importar módulos.</p>
+        <p>Para evitar a execução do código de inicialização ao importar um módulo, recomenda-se colocar o código de inicialização em uma função (geralmente chamada <code>main</code>) e executar essa função apenas se o módulo está sendo executado como um script:</p>
+        <pre><code class="python">class UsefulClass:
+    """Esta classe pode ser útil para outros módulos."""
+    pass
+
+def main():
+    """Cria uma classe útil e faz algo com ela para o nosso módulo."""
+    util = UsefulClass()
+    print(util)
+
+if __name__ == "__main__":
+    main()
+</code></pre>
+        <p>A variável especial <code>__name__</code> especifica o nome do módulo quando ele é importado. Quando o módulo é executado como um script, seu valor é definido como <code>"__main__"</code>.</p>
+
+        <p>Tipicamente, métodos vão em classes, que vão em módulos, que vão em pacotes. Mas em Python, recursos podem ser definidos em qualquer lugar, inclusive dentro de funções ou métodos. Isso pode ser útil para criar classes temporárias que são necessárias apenas em um escopo específico:</p>
+        <pre><code class="python">def format_string(string, formatter=None):
+    """Formata uma string usando o objeto formatter, que
+    espera ter um método format() que aceite uma string."""
+
+    class DefaultFormatter:
+        """Formata uma string em maiúsculas."""
+
+        def format(self, string):
+            return str(string).title()
+
+    if not formatter:
+        formatter = DefaultFormatter()
+
+    return formatter.format(string)
+
+hello_string = "hello world, how are you today?"
+print(" input: " + hello_string)
+print("output: " + format_string(hello_string))
+</code></pre>
+
+        <p>No entanto, essa técnica não é comumente usada em Python.</p>
+
+        <h3>Exercícios de fixação</h3>
+        <ol class="excs">
+            <li>
+                <ul>
+                    <li>Crie os pacotes <code>pai</code>, <code>filho</code> dentro de <code>pai</code>, e <code>neto</code> dentro de <code>filho</code>.</li>
+                    <li>Em cada pacote, crie um módulo que contenha uma variável global com um valor exclusivo e uma função que imprima a variável mágica <code>__name__</code>.</li>
+                    <li>Em cada módulo, importe as variáveis globais dos demais módulos usando importação relativa, e importe as funções dois demais módulos usando importação absoluta.</li>
+                    <li>Em cada módulo, crie um script que verifica se é o módulo principal, e se for, imprime as variáveis globais e chama os métodos seus e dos demais módulos.</li>
+                    <li>Execute cada módulo separadamente.</li>
+                </ul>
+            </li>
+        </ol>
+    </div>
+    <div id="who-can-access-my-data">
+        <h2>Quem pode acessar meus dados?</h2>
+
+        <p>O Python não tem um controle de acesso estrito como algumas outras linguagens de programação orientadas a objetos (public, package, protected, private). Em vez disso, ele depende de convenções e boas práticas para indicar quais métodos e atributos devem ser considerados privados (ou internos). Por convenção, recursos internos são prefixados com um caractere de sublinhado (<code>_</code>). Ou você pode escrever docstrings claras indicando isso. No entanto, não há nada no interpretador que impeça o acesso direto a eles.</p>
+
+        <p>Você também pode prefixar identificadores com dois sublinhados. O Python irá realizar o <b>name mangling</b>, que é a mudança de nome desses identificadores, tornando mais difícil acessá-los:</p>
+
+        <pre><code class="python">class SecretString:
+    """Uma maneira não muito segura de armazenar uma string secreta."""
+
+    def __init__(self, string_normal, senha):
+        self.__string_normal = string_normal
+        self.__frase_senha = senha
+
+    def descriptografar(self, senha):
+        """Somente mostra a string se a senha estiver correta."""
+        if senha == self.__senha:
+            return self.__string_normal
+        else:
+            return ""</code></pre>
+
+        <p>Quando usamos um duplo sublinhado, o recurso é prefixado com <code>_&lt;nomedaclasse&gt;</code>. Quando os métodos dentro da classe acessam a variável internamente, ela é automaticamente 'unmangled'. Quando classes externas desejam acessá-la, elas precisam fazer o name mangling manualmente. Portanto, o name mangling não garante privacidade; ele apenas recomenda fortemente.</p>
+
+        <h3>Exercícios</h3>
+        <ol class="excs">
+            <li>Crie um módulo chamado <code>math_operations.py</code> que contenha as seguintes funções:
+                <ul>
+                    <li><code>soma(a, b)</code>: retorna a soma de dois números.</li>
+                    <li><code>subtracao(a, b)</code>: retorna a subtração entre dois números.</li>
+                    <li><code>multiplicacao(a, b)</code>: retorna o produto de dois números.</li>
+                    <li><code>divisao(a, b)</code>: retorna o resultado da divisão entre dois números.</li>
+                </ul>
+                <p>No mesmo módulo <code>math_operations.py</code>, crie uma variável global chamada <code>pi</code> e atribua a ela o valor de 3.14.</p>
+            </li>
+            <li>Crie um módulo chamado <code>calculadora.py</code> que importe as funções do módulo <code>math_operations.py</code> e utilize-as para realizar operações matemáticas simples com valores escolhidos pelo usuário.
+            </li>
+            <li>Crie um módulo chamado <code>geometria.py</code> que contenha as seguintes classes:
+                <ul>
+                    <li><code>Retangulo</code>: representa um retângulo e possui os atributos <code>base</code> e <code>altura</code>. A classe deve ter um método para calcular a área.</li>
+                    <li><code>Circulo</code>: representa um círculo e possui o atributo <code>raio</code>. A classe deve ter um método para calcular a área.</li>
+                    <li><code>Triangulo</code>: representa um triângulo e possui os atributos <code>base</code> e <code>altura</code>. A classe deve ter um método para calcular a área.</li>
+                </ul>
+                <p>Importe o módulo <code>math_operations.py</code> para usar a constante <code>pi</code> e as funções de operação aritmética (proibido usar operadores aritméticos, apenas as funções disponíveis).</p>
+                <p>No mesmo módulo <code>geometria.py</code>, crie objetos das classes <code>Retangulo</code>, <code>Circulo</code> e <code>Triangulo</code> como variáveis globais, criados com valores de sua escolha.</p>
+            </li>
+            <li>Crie um módulo chamado <code>util.py</code> que contenha as seguintes funções:
+                <ul>
+                    <li><code>fatorial(n)</code>: retorna o fatorial de um número.</li>
+                    <li><code>fibonacci(n)</code>: retorna uma lista com os <code>n</code> primeiros elementos da sequência de Fibonacci.</li>
+                    <li><code>primo(n)</code>: verifica se um número é primo.</li>
+                </ul>
+            </li>
+            <li>Crie um módulo chamado <code>test.py</code> que importe as variáveis do módulo <code>geometria.py</code> e teste os cálculos das áreas das figuras geométricas.
+            </li>
+            <li>Crie um módulo chamado <code>main.py</code> que importe as funções do módulo <code>util.py</code> e as teste com valores informados pelo usuário.
+            </li>
+            <li>Transfira o módulo <code>calculadora.py</code> e o módulo <code>util.py</code> para um pacote chamado <code>utilidades</code>. Atualize os módulos que fazem uso deles para funcionarem corretamente.
+            </li>
+            <li>Na função <code>soma</code> do módulo <code>math_operations.py</code>, adicione um docstring informando o que ela faz. Acesse esse docstring em outro módulo e imprima na tela.
+            </li>
+            <li>No módulo <code>math_operations.py</code>, altere o nome da variável global <code>pi</code> para <code>_pi</code>. Tente acessá-la. O que acontece?
+            </li>
+        </ol>
+    </div>
+</div>
