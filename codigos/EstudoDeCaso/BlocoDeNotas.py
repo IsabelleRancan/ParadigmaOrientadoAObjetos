@@ -59,3 +59,7 @@ class Notebook:
         """Find all notes that match the given filter
         string."""
         return [note for note in self.notes if note.match(filter)]
+    
+    def _find_note(self, note_id):
+        """Adicionando o método que retorna uma nota com um ID específico"""
+        
