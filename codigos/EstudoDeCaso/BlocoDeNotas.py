@@ -42,18 +42,20 @@ class Notebook:
     def modify_memo(self, note_id, memo):
         """Find the note with the given id and change its
         memo to the given value."""
-        for note in self.notes:
-            if note.id == note_id:
-                note.memo = memo
-                break
+        #for note in self.notes:
+            #if note.id == note_id:
+        result = self.notes._find_note(note_id)
+        result.memo = memo
+                #break
  
     def modify_tags(self, note_id, tags):
         """Find the note with the given id and change its
         tags to the given value."""
-        for note in self.notes:
-            if note.id == note_id:
-                note.tags = tags
-                break
+        #for note in self.notes:
+            #if note.id == note_id:
+        result = self.notes._find_note(note_id)
+        result.tags = tags
+                #break
  
     def search(self, filter):
         """Find all notes that match the given filter
@@ -62,4 +64,42 @@ class Notebook:
     
     def _find_note(self, note_id):
         """Adicionando o método que retorna uma nota com um ID específico"""
-        
+        for item in self.notes:
+            if item.id == note_id:
+                return item 
+                break
+
+class Menu:
+    def show(self): #perguntar pro professor o PQ
+        #criando opções em um loop infinito 
+        opcao = 0
+        while opcao != 4:
+            print('---------------------------------------------------------------------------------------')
+            print('1 - Criar')      
+            print('2 - Modificar')      
+            print('3 - Listar')      
+            print('4 - Sair') 
+            opcao = int(input("Escolha uma opção: ")) #convertendo a entrada pra um número
+
+            if opcao == 1 :
+                print('Criar')
+            elif opcao == 2 :
+                print('Modificar')
+            elif opcao == 3 :
+                print('Listar')
+            elif opcao == 4 :
+                print('Saindo do Programa')
+            else :
+                print('Opção inválida') 
+
+
+
+
+
+
+
+
+
+teste = Menu()
+teste.show() 
+
