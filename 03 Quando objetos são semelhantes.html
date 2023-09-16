@@ -10,9 +10,25 @@
         }, false);
     </script>
 
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/default.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
+    <script defer>hljs.configure({ cssSelector: "code", languages: ["console"] }); hljs.highlightAll(); hljs.initLineNumbersOnLoad();</script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" integrity="sha384-GvrOXuhMATgEsSwCs4smul74iXGOixntILdUW9XmUC6+HX0sLNAK3q71HotJqlAn" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js" integrity="sha384-cpW21h6RZv/phavutF+AuVYrr+dA8xD9zs6FwLpaCct6O9ctzYFfFr4dgmgccOTx" crossorigin="anonymous"></script>
+    <!-- retire o atributo output para, ao copiar uma fórmula, copiar tanto no formato html quanto no formato mathml, entretanto, a fórmula sai duplicada -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous" onload="renderMathInElement(document.body,{delimiters:[{left: '$$', right: '$$', display: true},{left: '$', right: '$', display: false},],output:'html'});"></script>
+
     <style>
         img {
-            max-width: 100%;
+            /* garante que a imagem se enquadre dentro da viewport com uma margem de 10% desta */
+            max-width: 90vh;
+            max-height: 90vh;
         }
 
         .center {
@@ -63,21 +79,6 @@
             padding-left: 10px;
         }
     </style>
-
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/default.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
-    <script defer>hljs.configure({ cssSelector: "code", languages: ["console"] }); hljs.highlightAll(); hljs.initLineNumbersOnLoad();</script>
-
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" integrity="sha384-GvrOXuhMATgEsSwCs4smul74iXGOixntILdUW9XmUC6+HX0sLNAK3q71HotJqlAn" crossorigin="anonymous">
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js" integrity="sha384-cpW21h6RZv/phavutF+AuVYrr+dA8xD9zs6FwLpaCct6O9ctzYFfFr4dgmgccOTx" crossorigin="anonymous"></script>
-    <!-- retire o atributo output para, ao copiar uma fórmula, copiar tanto no formato html quanto no formato mathml, entretanto, a fórmula sai duplicada -->
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous" onload="renderMathInElement(document.body,{delimiters:[{left: '$$', right: '$$', display: true},{left: '$', right: '$', display: false},],output:'html'});"></script>
-
 </head>
 
 <div id="3-when-objects-are-alike">
@@ -99,7 +100,6 @@
         Contact.all_contacts.append(self)</code></pre>
 
         <p>A variável <code>all_contacts</code> é uma <b>variável de classe</b>. Semelhante a uma variável global, há apenas UMA variável de classe <code>Contact.all_contacts</code> compartilhada por todo o sistema. Para acessar uma variável de classe, informe o nome da classe antes do nome da variável.</p>
-        <p>Objetos desta classe podem acessar a variável de classe como se fosse seu atributo. Por exemplo, em um método, também podemos acessar a variável de classe com <code>self.all_contacts</code>. Se o objeto não possuir um atributo com esse nome, ele procura acessar a variável de classe. Agora, se você tentar atribuir um valor à variável de classe usando um objeto, na verdade, estará criando um novo atributo. Portanto, não é recomendável acessar variáveis de classe através de um objeto.</p>
         <p>Se teu sistema possuir contatos "fornecedores", os quais poderão receber pedidos, não seria interessante implementar um método de pedidos diretamente na classe <code>Contact</code>, pois isso permitiria a contatos que não são fornecedores também receberem pedidos:</p>
         <pre><code class="python">class Supplier(Contact):
         def order(self, order):
@@ -144,7 +144,7 @@
             self.phone = phone
     </code></pre>
 
-            <p>Podemos chamar <code>super()</code> em qualquer lugar dentro de um método. Isso acessa os atributos e métodos declarados na classe pai, útil quando sobrescrevemos um método na classe filha.</p>
+            <p>A função <code>super</code> é usada dentro de uma classe para se referir à classe pai e não pode ser usada fora do escopo de uma classe. Ela acessa os atributos e métodos declarados na classe pai, útil quando sobrescrevemos um método na classe filha.</p>
         </div>
     </div>
 
@@ -174,7 +174,7 @@
 
         <p>Herança múltipla é eficaz para combinar métodos de diferentes classes, mas se complica ao lidar com chamadas de métodos de mesmo nome em várias superclasses.</p>
 
-        <p>Para explorar essas questões, consideremos a adição de um endereço residencial à classe <code>Friend</code>. Existem várias abordagens possíveis: passar os elementos do endereço como parâmetros para o construtor da classe <code>Friend</code>, armazená-los em uma estrutura (como uma tupla ou dicionário) e passá-los como um único argumento ou até mesmo criar uma classe separada chamada <code>Address</code> para encapsular esses elementos e passar uma instância dela ao construtor da classe <code>Friend</code>.</p>
+        <p id="3-2-composicao">Para explorar essas questões, consideremos a adição de um endereço residencial à classe <code>Friend</code>. Existem várias abordagens possíveis: passar os elementos do endereço como parâmetros para o construtor da classe <code>Friend</code>, armazená-los em uma estrutura (como uma tupla ou dicionário) e passá-los como um único argumento ou até mesmo criar uma classe separada chamada <code>Address</code> para encapsular esses elementos e passar uma instância dela ao construtor da classe <code>Friend</code>.</p>
 
         <p>Embora a composição seja uma solução eficaz para esse cenário, a herança também é possível. Neste contexto, criamos uma nova classe chamada <code>AddressHolder</code>:</p>
 
@@ -204,7 +204,7 @@
 
             <p>Nesse exemplo, como todas as classes herdam de <code>object</code>, o método <code>__init__</code> de <code>object</code> seria chamado duas vezes. Como este não faz nada, aqui, não teria problema. Mas imagine tentar se conectar ao banco de dados duas vezes para cada requisição! Portanto, a classe base deveria ser chamada apenas uma vez. Mas por quem? Em qual ordem? <code>Friend</code> → <code>Contact</code> → <code>Object</code>?</p>
 
-            <p>Considere mais um exemplo do problema do diamente:</p>
+            <p>Considere mais um exemplo do problema do diamante:</p>
             <p>
                 <img id='3-2-1-call-me' alt='another example of diamond problem'>
             </p>
@@ -301,17 +301,696 @@ class Friend(Contact, AddressHolder):
         <p>Para os exercícios a seguir, escreva um script testando o que foi proposto. Pode ser no mesmo arquivo da classe implementada.</p>
         <ol class="excs">
             <li>Altere o método <a href="#3-1-1-contactlist"><code>ContactList.search</code></a> para usar list comprehension.</li>
+
+            <li>Reescreva o exemplo de gerenciador de contatos de modo a usar Composição em vez de Herança para adicionar endereço residencial à <code>Friend</code>. Adote a opção de criar uma classe separada chamada <code>Address</code> <a href="#3-2-composicao">proposta pelo livro</a>.</li>
+
             <li>Reescreva o exemplo de gerenciador de contatos de modo que tanto <code>Contact</code> quanto <code>Friend</code> precise ser inicializada com um parâmetro <code>phone</code>. Adote uma das <a href="#3-2-2-parametro-compartilhado">opções propostas</a> pelo livro.</li>
 
-            <li>Crie uma classe <code>Animal</code> com um método `falar()` que imprima "O animal está fazendo barulhos." Em seguida, crie subclasses <code>Cachorro</code> e <code>Gato</code> que herdem da classe <code>Animal</code> e sobrescrevam o método `falar()` para imprimir sua respectiva onomatopéia.</li>
+            <li>Crie uma classe <code>Animal</code> com um método <code>falar</code> que imprima "O animal está fazendo barulhos." Em seguida, crie subclasses <code>Cachorro</code> e <code>Gato</code> que herdem da classe <code>Animal</code> e sobrescrevam o método <code>falar</code> para imprimir sua respectiva onomatopéia.</li>
 
-            <li>Crie uma classe <code>Veiculo</code> com atributos <code>marca</code> e <code>ano</code>. Crie uma subclasse <code>Carro</code> que herde de <code>Veiculo</code> e tenha um atributo adicional <code>modelo</code>. Adicione um método `detalhes()` à classe <code>Carro</code> que imprima as informações do carro.</li>
+            <li>Crie uma classe <code>Veiculo</code> com atributos <code>marca</code> e <code>ano</code>. Crie uma subclasse <code>Carro</code> que herde de <code>Veiculo</code> e tenha um atributo adicional <code>modelo</code>. Adicione um método <code>detalhes</code> à classe <code>Carro</code> que imprima as informações do carro.</li>
 
-            <li>Crie uma classe <code>Pai</code> com um atributo <code>nome</code> e um método `apresentar()` que imprima que ele é pai e o nome dele. Crie uma subclasse <code>Filho</code> que herde de <code>Pai</code> e sobrescreva o método `apresentar()` para imprimir que ele é filho e o nome dele.</li>
+            <li>Crie uma classe <code>Pai</code> com um atributo <code>nome</code> e um método <code>apresentar</code> que imprima que ele é pai e o nome dele. Crie uma subclasse <code>Filho</code> que herde de <code>Pai</code> e sobrescreva o método <code>apresentar</code> para imprimir que ele é filho e o nome dele.</li>
 
-            <li>Crie quatro classes: <code>A</code>, <code>B</code>, <code>C</code> e <code>D</code>. As classes <code>B</code> e <code>C</code> devem herdar de <code>A</code>, e a classe <code>D</code> deve herdar de <code>B</code> e <code>C</code>. As classes <code>A</code>, <code>B</code> e <code>C</code> devem ter um método `mostrar()` que imprima uma mensagem indicando de qual classe o método foi chamado. Quando você chama o método `mostrar()` em um objeto da classe <code>D</code>, de qual superclasse é executado?</li>
+            <li>Crie quatro classes: <code>A</code>, <code>B</code>, <code>C</code> e <code>D</code>. As classes <code>B</code> e <code>C</code> devem herdar de <code>A</code>, e a classe <code>D</code> deve herdar de <code>B</code> e <code>C</code>. As classes <code>A</code>, <code>B</code> e <code>C</code> devem ter um método <code>mostrar</code> que imprima uma mensagem indicando de qual classe o método foi chamado. Quando você chama o método <code>mostrar</code> em um objeto da classe <code>D</code>, de qual superclasse é executado?</li>
 
-            <li>Altere o exercício anterior, acrescentando ao método <code>mostrar</code> das classes <code>B</code> e <code>C</code> a chamada ao método <code>mostrar</code> de sua superclasse. Agora, quando você chama o método `mostrar()` em um objeto da classe <code>D</code>, de qual superclasse é executado?</li>
+            <li>Altere o exercício anterior, acrescentando ao método <code>mostrar</code> das classes <code>B</code> e <code>C</code> a chamada ao método <code>mostrar</code> de sua superclasse. Agora, quando você chama o método <code>mostrar</code> em um objeto da classe <code>D</code>, de qual superclasse é executado?</li>
+        </ol>
+    </div>
+
+    <div id="3-3-polymorphism">
+        <h2>Polimorfismo</h2>
+        <p>Definição: chamar um método idêntico para diferentes subclasses mas com comportamentos diferentes, sem explicitamente saber qual classe foi chamada. Por exemplo, um objeto da classe <code>AudioFile</code> pode ter um método <code>play</code> que se encarrega de descomprimir o arquivo de áudio e direcioná-lo para a placa de som. Mas dependendo do tipo de áudio, o processo de descompressão é diferente. Assim, poderíamos ter diferentes subclasses com o mesmo método implementado de forma diferente para diferentes arquivos de áudio, como mp3, wav, ogg. Um objeto “tocador de música”, então, não precisaria saber a subclasse de um objeto <code>AudioFile</code>, apenas que ele possui um método <code>play</code> que cumprirá seu papel quando chamado.</p>
+
+        <p>Exemplo:</p>
+        <pre><code class="python">class AudioFile:
+    def __init__(self, filename):
+        if not filename.endswith(self.ext):
+            raise Exception("Invalid file format")
+
+        self.filename = filename
+
+
+class MP3File(AudioFile):
+    ext = "mp3"
+
+    def play(self):
+        print(f"playing {self.filename} as mp3")
+
+
+class WavFile(AudioFile):
+    ext = "wav"
+
+    def play(self):
+        print(f"playing {self.filename} as wav")
+
+
+class OggFile(AudioFile):
+    ext = "ogg"
+
+    def play(self):
+        print(f"playing {self.filename} as ogg")
+
+</code></pre>
+
+        <p>O método <code>__init__</code> da superclasse consegue acessar a variável <code>ext</code> de diferentes subclasses. Polimorfismo nos permite isso.</p>
+        <p>Tente criar um script “tocador de música”, instanciar alguns objetos, inclusive passando um formato de arquivo inválido para um deles.</p>
+
+        <p><b>Duck typing</b></p>
+        <p>Como em Python as verificações de tipo geralmente são feitas em tempo de execução ao invés de tempo de compilação, além do polimorfismo hereditário, também podemos usar o recurso “duck typing” do Python.</p>
+        <p>A expressão mais comum que ilustra o conceito de duck typing é: "Se parece um pato, nada como um pato e grasna como um pato, então é provavelmente um pato". Isso significa que, em vez de verificar se um objeto é de uma classe específica, você verifica se ele possui os métodos e atributos esperados para executar uma determinada tarefa.</p>
+        <p>O duck typing nos permite criar objetos que funcionem de maneira semelhante aos tipos esperados, sem nos preocupar com herança ou implementação explícita de interfaces. Por exemplo:</p>
+        <pre><code class="python">class FlacFile:
+    def __init__(self, filename):
+        if not filename.endswith(".flac"):
+            raise Exception("Invalid file format")
+
+        self.filename = filename
+
+    def play(self):
+        print(f"playing {self.filename} as flac")
+</code></pre>
+        <p>Apesar de <code>FlacFile</code> não herdar diretamente de <code>AudioFile</code>, podemos usá-la como se fosse, pois implementa a mesma interface:</p>
+
+        <pre><code class="python">def play(objeto):
+    objeto.play()
+
+
+mp3file = MP3File("file.mp3")
+flacfile = FlacFile("file.flac")
+
+play(mp3file)
+play(flacfile)
+</code></pre>
+    </div>
+
+    <div id="object-methods">
+        <h2>Métodos de classe</h2>
+
+        <p>Além dos métodos estáticos e métodos de instância, o Python também tem os métodos de classe. Os <b>Métodos de classe</b> são métodos que operam na classe em si, em vez de em instâncias individuais. Eles são decorados com <code>@classmethod</code> e seu primeiro argumento se refere à própria classe em que o método foi chamado, e convencionalmente o declaramos como <code>cls</code>.</p>
+        <p>Os Métodos de classe têm sua aplicação em situações mais complexas, como quando precisamos criar objetos de uma classe com diferentes configurações de maneira flexível, usando o padrão de design chamado "fábrica." Além disso, eles são utilizados em conceitos avançados de herança, que citaremos posteriormente. No entanto, em tarefas do dia a dia, geralmente não são essenciais e podem ser substituídos por alternativas mais simples, como métodos estáticos.</p>
+
+
+        <p>O seguinte código é um exemplo do padrão <i>factory</i>, <a href="https://realpython.com/instance-class-and-static-methods-demystified/#lets-see-them-in-action">adaptado daqui</a>:</p>
+        <pre><code class="python">class Pizza:
+    def __init__(self, ingredientes):
+        self.ingredientes = ingredientes
+
+    @classmethod
+    def marguerita(cls):
+        return cls(["molho de tomate", "manjericão", "rodelas de tomate fresco", "azeitona", "queijo muçarela", "orégano salpicado"])
+
+    @classmethod
+    def calabresa(cls):
+        return cls(["queijo", "molho de tomate", "calabresa em rodelas", "cebola", "tomate picado", "azeite", "orégano"])
+
+
+p1 = Pizza(["queijo", "azeitona preta", "ovo cozido", "presunto cozido", "cebola", "ervilha", "molho de tomate", "azeite"])
+p2 = Pizza.marguerita()
+p3 = Pizza.calabresa()
+
+print("\nPizza de Portuguesa:", p1.ingredientes)
+print("\nPizza de Marguerita:", p2.ingredientes)
+print("\nPizza de Calabresa:", p3.ingredientes)
+</code></pre>
+
+        <p>No método de classe, em vez de receber uma instância como o parâmetro <code>self</code>, ele recebe a própria classe como o parâmetro <code>cls</code>. Isso nos permite chamar o construtor da classe que foi passada como parâmetro. Você pode estar se perguntando por que não chamamos diretamente o construtor da classe <code>Pizza</code> em vez de passar <code>cls</code> como parâmetro. De fato, neste exemplo específico, poderíamos fazer isso e marcar o método como <code>@staticmethod</code>. No entanto, em situações em que a classe <code>Pizza</code> é uma superclasse, podemos não querer chamar diretamente o construtor da <code>Pizza</code>, mas sim ter acesso à classe filha, por exemplo, <code>Calzone</code>, que pode ter sido passada como parâmetro. Portanto, de fato, métodos de classe têm mais utilidade no contexto de herança.</p>
+
+    </div>
+
+    <div id="3-4-abstract-base-classes">
+        <h2>Classes bases abstratas</h2>
+
+        <p>Em Python, uma Classe Base Abstrata (ABC) define um conjunto de métodos e propriedades que subclasses são obrigadas a implementar.</p>
+
+        <h3>Usando uma classe base abstrata</h3>
+        <p>Python organiza sua API usando classes abstratas. Um exemplo delas é a classe <code>Container</code>, que possui o método abstrato <code>__contains__(self, x)</code>, que verifica se <code>x</code> está contido no objeto desta classe. Este método é implementado pelas classes <code>list</code>, <code>str</code> e <code>dict</code>. Poderíamos criar um contêiner simplório que verifica se um parâmetro está contido no conjunto dos números inteiros pares:</p>
+        <pre><code class="python">class OddContainer:
+    def __contains__(self, x):
+        return isinstance(x, int) and x % 2 == 0</code></pre>
+
+        <p>A função <code>isinstance</code> verifica se o primeiro argumento é uma instância do segundo argumento.</p>
+
+        <p>Mesmo não herdando de <code>Container</code>, <code>OddContainer</code> é considerado pelo Python como <code>Container</code>:</p>
+        <pre><code class="python">>>> from collections import Container
+>>> odd_container = OddContainer()
+>>> isinstance(odd_container, Container)
+True
+>>> issubclass(OddContainer, Container)
+True</code></pre>
+
+        <p>A função <code>issubclass</code> verifica se o primeiro argumento é uma subclasse do segundo argumento.</p>
+
+        <p>Isso é um exemplo de duck typing, podemos alcançar polimorfismo sem uso de herança.</p>
+        <p>Quando utilizamos o operador <code>in</code> no Python, ele chama implicitamente o método <code>__contains__</code> do operando à direita passando o operando à esquerda como parâmetro:</p>
+        <pre><code class="python">>>> 1 in odd_container
+True
+>>> 2 in odd_container
+False
+>>> 3 in odd_container
+True
+>>> "a string" in odd_container
+False</code></pre>
+
+        <h3>Criando uma classe abstrata</h3>
+        <p>Uma das principais vantagens das classes abstratas é a facilitação na criação de APIs. A classe abstrata estabelece um contrato, ou seja, define quais métodos devem ser implementados pelas subclasses. Essa especificação da API é essencial para que os desenvolvedores entendam como interagir com as classes baseadas na abstração. Além disso, a própria classe abstrata, juntamente com comentários e descrições adequadas, compõe uma parte valiosa da documentação da API. Isso permite que os desenvolvedores compreendam a estrutura da classe abstrata, seus métodos e propriedades, além de entenderem como criar novas classes que se encaixem nesse padrão. Seguindo a API você e outros desenvolvedores podem desenvolver diferentes versões de classes abstratas para diferentes propósitos, e outros desenvolvedores poderão usar as diferentes versões de igual modo. Um exemplo comum de APIs é em bancos de dados, tendo uma API em comum você pode implementá-la para um banco de dados específico, e outras pessoas que utilizam dessa API podem trocar para o seu banco de dados simplesmente mudando para a tua implementação sem necessitar modificar o restante do sistema.</p>
+        <p>Vamos ilustrar ABC com o exemplo de mídia de áudio:</p>
+        <pre><code class="python">import abc
+
+
+class MediaLoader(abc.ABC):
+    @abc.abstractmethod
+    def play(self):
+        pass
+
+    @property
+    @abc.abstractmethod
+    def ext(self):
+        pass
+
+
+class Ogg(MediaLoader):
+    ext = ".ogg"
+
+    def play(self):
+        pass
+
+
+o = Ogg()
+print(o)
+print(issubclass(Ogg, MediaLoader))
+print(isinstance(o, MediaLoader))
+
+
+class Mp3:
+    ext = ".mp3"
+
+    def play(self):
+        pass
+
+
+m = Mp3()
+print(m)
+print(issubclass(Mp3, MediaLoader))
+print(isinstance(m, MediaLoader))
+
+
+class Wav(MediaLoader):
+    pass
+
+
+w = Wav()
+print(w)
+print(issubclass(Wav, MediaLoader))
+print(isinstance(w, MediaLoader))
+</code></pre>
+
+        <p>Para uma classe ser abstrata, deve herdar de <code>ABC</code>. Uma classe abstrata pode ter métodos concretos. Para marcar um método como abstrato, decore-o com <code>@abc.abstractmethod</code>. O que tiver essa decoração deve ser implementado na classe filha. Já a decoração <code>@property</code>, que não tem a ver com ABC, marca um método como propriedade, isto é, ele é considerado como uma variável somente-leitura. Veremos mais sobre decorações no capítulo 10.</p>
+        <p>Observe que <code>Ogg</code> é uma subclasse de <code>MediaLoader</code>, mas <code>Mp3</code> não. Quando você herda de uma classe base, o Python verifica automaticamente se a nova classe é uma subclasse válida da classe base. No entanto, em algumas situações, você pode querer personalizar ou relaxar essas verificações de subclasse através de duck typing. Para tanto, acrescente esse método à <code>MediaLoader</code>:</p>
+        <pre><code class="python">    @classmethod
+    def __subclasshook__(cls, Subclass):
+    if cls is MediaLoader:
+        if hasattr(Subclass, "play") and hasattr(Subclass, "ext"):
+            return True
+
+    return NotImplemented</code></pre>
+
+        <p>O método <code>__subclasshook__</code> é frequentemente usado em classes base abstratas (ABCs) e pode ser usado para controlar se uma determinada classe é considerada uma subclasse da classe que define o método <code>__subclasshook__</code>. Ele deve ser definido como um método de classe (usando a decoração <code>@classmethod</code>) em uma classe base. O método recebe dois argumentos: a classe sendo verificada e a classe potencialmente considerada uma subclasse. Esse método é chamado automaticamente durante a execução das funções <code>issubclass</code> e <code>isinstance</code>, antes da verificação de herança.</p>
+        <p>Se o método retornar <code>True</code>, o Python considerará a classe como uma subclasse válida da classe base. Se o método retornar <code>False</code>, o Python não considerará a classe como uma subclasse válida da classe base. Se o método retornar <code>NotImplemented</code>, o Python continuará a verificação de subclasse olhando para as superclasses.</p>
+        <p>O uso de <code>__subclasshook__</code> é mais avançado e geralmente não é necessário para a maioria das situações. Ele é mais útil em cenários onde você deseja customizar a verificação de subclasse para casos específicos ou quando lida com estruturas de herança complexas.</p>
+    </div>
+
+    <div id="enum">
+        <h2>Tipos <code>Enum</code></h2>
+        <p>Um <code>Enum</code> é um conjunto de nomes simbólicos vinculados a valores únicos. Eles são semelhantes a variáveis globais, mas oferecem um método <code>repr</code> mais útil, agrupamento, segurança de tipo (type-safety) e alguns outros recursos.</p>
+        <p>Eles são úteis quando você precisa representar um conjunto fixo de constantes. Por exemplo, os dias da semana:</p>
+
+        <pre><code class="python">from enum import Enum
+class Weekday(Enum):
+    MONDAY = 1
+    TUESDAY = 2
+    WEDNESDAY = 3
+    THURSDAY = 4
+    FRIDAY = 5
+    SATURDAY = 6
+    SUNDAY = 7</code></pre>
+        <p>Ou talvez as cores primárias RGB:</p>
+        <pre><code class="python">from enum import Enum
+class Color(Enum):
+    RED = 1
+    GREEN = 2
+    BLUE = 3</code></pre>
+
+        <p>Como você pode ver, criar um <code>Enum</code> é tão simples quanto escrever uma classe que herda do próprio <code>Enum</code>.</p>
+        <p>Dependendo da natureza do enum, o valor de um membro pode ou não ser importante, mas de qualquer maneira esse valor pode ser usado para obter o membro correspondente:</p>
+        <pre><code class="python">>>> Weekday(3)
+&lt;Weekday.WEDNESDAY: 3></code></pre>
+
+        <p>Os membros do <code>Enum</code> têm um atributo que contém apenas o nome deles:</p>
+
+        <pre><code class="python">>>> print(Weekday.TUESDAY.name)
+TUESDAY</code></pre>
+
+        <p>Da mesma forma, eles têm um atributo para o valor deles:</p>
+
+        <pre><code class="python">>>> Weekday.WEDNESDAY.value
+3</code></pre>
+
+        <p>Se você tiver um membro enum e precisar do nome ou valor dele:</p>
+
+        <pre><code class="python">>>> member = Color.RED
+>>> member.name
+'RED'
+>>> member.value
+1</code></pre>
+
+        <h3>Membros e atributos permitidos de <code>Enum</code>s</h3>
+
+        <p><code>Enum</code>s são classes Python e podem ter métodos e atributos. Por exemplo, o seguinte <code>Enum</code> tem todos os planetas do nosso sistema solar, cada um com dois atributos associados:</p>
+        <pre><code class="python">from enum import Enum
+
+
+class Planet(Enum):
+    MERCURY = (3.303e23, 2.4397e6)
+    VENUS = (4.869e24, 6.0518e6)
+    EARTH = (5.976e24, 6.37814e6)
+    MARS = (6.421e23, 3.3972e6)
+    JUPITER = (1.9e27, 7.1492e7)
+    SATURN = (5.688e26, 6.0268e7)
+    URANUS = (8.686e25, 2.5559e7)
+    NEPTUNE = (1.024e26, 2.4746e7)
+
+    def __init__(self, mass, radius):
+        self.mass = mass  # in kilograms
+        self.radius = radius  # in meters
+
+    def surface_gravity(self):
+        # universal gravitational constant  (m3 kg-1 s-2)
+        G = 6.67300e-11
+        return G * self.mass / (self.radius * self.radius)
+
+    def surface_weight(self, otherMass):
+        return otherMass * self.surface_gravity()</code></pre>
+
+        <p>Se o método <code>__init__</code> for definido, o valor do membro enum será passado para ele.</p>
+
+        <p>O código a seguir pega seu peso na Terra (em qualquer unidade) e imprime seu peso em todos os planetas (na mesma unidade):</p>
+
+        <pre><code class="python">earth_weight = float(input("What is your weight on Earth? "))
+mass = earth_weight / Planet.EARTH.surface_gravity()
+for p in Planet:
+    print(f"Your weight on {p.name} is {p.surface_weight(mass)}")</code></pre>
+
+        <p>A maioria dos casos usa inteiros para valores de enum. Usar inteiros é curto e prático (e fornecido por padrão pela API Funcional), mas não estritamente forçado. Na grande maioria dos casos de uso, não importa o valor de um enum. Mas se o valor for importante, os enums podem ter valores arbitrários:</p>
+
+        <pre><code class="python">class Mood(Enum):
+    FUNKY = 1
+    HAPPY = 3
+
+    def describe(self):
+        # self is the member here
+        return self.name, self.value
+
+    def __str__(self):
+        return f'my custom str! {self.value}'
+
+    @classmethod
+    def favorite_mood(cls):
+        # cls here is the enumeration
+        return cls.HAPPY</code></pre>
+
+        <p>Então:</p>
+
+        <pre><code class="python">>>> Mood.favorite_mood()
+&lt;Mood.HAPPY: 3>
+>>> Mood.HAPPY.describe()
+('HAPPY', 3)
+>>> str(Mood.FUNKY)
+'my custom str! 1'</code></pre>
+
+        <p>Como outro exemplo, <code>datetime.date</code> tem dois métodos para retornar o dia da semana: <code>weekday</code> e <code>isoweekday</code>. A diferença é que um deles conta de 0-6 e o outro de 1-7. Em vez de nos preocuparmos com isso manualmente, podemos adicionar um método ao enum <code>Weekday</code> para extrair o dia da instância de data e retornar o membro enum correspondente:</p>
+
+        <pre><code class="python">class Weekday(Enum):
+    MONDAY = 1
+    TUESDAY = 2
+    WEDNESDAY = 3
+    THURSDAY = 4
+    FRIDAY = 5
+    SATURDAY = 6
+    SUNDAY = 7
+
+    @classmethod
+    def from_date(cls, date):
+        return cls(date.isoweekday())</code></pre>
+
+        <p>Agora podemos descobrir que dia é hoje! Observe:</p>
+
+        <pre><code class="python">>>> from datetime import date
+>>> Weekday.from_date(date.today())     
+&lt;Weekday.TUESDAY: 2></code></pre>
+
+        <p>Este enum <code>Weekday</code> é ótimo se nossa variável precisar apenas de um dia, mas e se precisarmos de vários? Talvez estejamos escrevendo uma função para planejar tarefas durante uma semana e não queremos usar uma lista...</p>
+
+        <h4>Flag Enum</h4>
+        <p>Ao criar um enum que herda de <code>Flag</code>, podemos executar operações bit a bit em seus membros, como combiná-los usando o operador <code>|</code>:</p>
+
+        <pre><code class="python">from enum import Flag
+
+class Weekday(Flag):
+    MONDAY = 1
+    TUESDAY = 2
+    WEDNESDAY = 4
+    THURSDAY = 8
+    FRIDAY = 16
+    SATURDAY = 32
+    SUNDAY = 64</code></pre>
+
+        <p>Mudamos duas coisas: herdamos de <code>Flag</code>, e os valores são todos potências de 2.</p>
+
+        <p>Assim como o enum original <code>Weekday</code> acima, podemos ter uma única seleção:</p>
+
+        <pre><code class="python">>>> first_week_day = Weekday.MONDAY
+>>> first_week_day
+&lt;Weekday.MONDAY: 1></code></pre>
+
+        <p>Mas o <code>Flag</code> também nos permite combinar vários membros em uma única variável:</p>
+
+        <pre><code class="python">>>> weekend = Weekday.SATURDAY | Weekday.SUNDAY
+>>> weekend
+&lt;Weekday.SATURDAY|SUNDAY: 96></code></pre>
+
+        <!-- <p>Você pode até iterar sobre uma variável do tipo <code>Flag</code>:</p>
+
+        <pre><code class="python">>>> for day in weekend:
+...     print(day)
+Weekday.SATURDAY
+Weekday.SUNDAY</code></pre> -->
+
+        <p>Nos casos em que os valores reais dos membros não importam, você pode economizar algum trabalho e usar o método <code>auto</code> para os valores:</p>
+
+        <pre><code class="python">from enum import auto
+class Weekday(Flag):
+    MONDAY = auto()
+    TUESDAY = auto()
+    WEDNESDAY = auto()
+    THURSDAY = auto()
+    FRIDAY = auto()
+    SATURDAY = auto()
+    SUNDAY = auto()
+    WEEKEND = SATURDAY | SUNDAY</code></pre>
+
+        <p>Considere este código:</p>
+
+        <pre><code class="python">from enum import Flag
+from enum import auto
+
+
+class Color(Flag):
+    BLACK = 0
+    RED = auto()
+    GREEN = auto()
+    BLUE = auto()
+    PURPLE = RED | BLUE
+    WHITE = RED | GREEN | BLUE</code></pre>
+
+        <p>Iterar sobre uma combinação de membros <code>Flag</code> retornará apenas os membros que são compostos por um único bit:</p>
+        <pre><code class="python">>>> Color(5)  # named combination
+&lt;Color.PURPLE: 5>
+>>> Color(3)      # not named combination
+&lt;Color.GREEN|RED: 3></code></pre>
+
+        <p>Nomes de pseudo-flags são construídos a partir dos nomes de seus membros:</p>
+
+        <pre><code class="python">>>> (Color.RED | Color.BLUE).name
+'PURPLE'</code></pre>
+
+        <p>Flags de valor zero são sempre consideradas contidas:</p>
+        <pre><code class="python">>>> Color.BLACK in Color.WHITE
+True</code></pre>
+
+        <p>Caso contrário, será retornado <code>True</code> apenas se todos os bits de uma flag estiverem na outra flag:</p>
+        <pre><code class="python">>>> Color.PURPLE in Color.WHITE
+True
+>>> Color.GREEN in Color.PURPLE
+False</code></pre>
+    </div>
+
+    <div id="3-5-exercises">
+        <h2>Exercícios</h2>
+        <ol class="excs">
+            <li>Imagine que você está desenvolvendo um sistema de Gerenciamento de Documentos - este sistema armazenará quatro tipos de documentos com seus respectivos atributos:
+
+                <p>
+                <ol>
+                    <li>PDFs (autor, data de criação, tamanho do arquivo).</li>
+                    <li>Documentos do Word (autor, data de criação, tamanho do arquivo).</li>
+                    <li>Imagens (autor, data de criação, tamanho do arquivo, dimensões da imagem).</li>
+                    <li>Vídeos (autor, data de criação, tamanho do arquivo, dimensões da imagem, duração).</li>
+                </ol>
+                </p>
+
+                <p>Cada documento deve possuir um método que recebe uma unidade de medida de bytes (B, K, M, G, T, ...) e retorna seu tamanho nessa unidade.</p>
+
+                <p>Se o documento tiver dimensões, também deve ter um método que retorna a quantidade de pixels.</p>
+
+                <p>Como você implementaria esse sistema usando herança?</p>
+            </li>
+
+            <li>Elabore o diagrama de classes e implemente em Python, utilizando herança e composição, a descrição a seguir. Considere <code>Polígono</code> e <code>Quadrilátero</code> como classes abstratas. Não é necessário realizar validação dos dados; suponha que os valores de inicialização dos objetos serão sempre válidos.
+                <p><strong>Descrição:</strong></p>
+                <p>Um <strong>ponto</strong> é definido pelas coordenadas $x$ e $y$. É possível calcular a distância entre dois pontos.</p>
+                <p>Uma <strong>linha</strong> é composta por dois pontos. É possível calcular a medida da linha, dada pela fórmula $d = \sqrt{(x_2 - x_1)^2 + (y_2 - y_1)^2}$. É possível calcular o coeficiente angular da linha, dado pela fórmula $m=\frac{y_2-y_1}{x_2-x_1}$, mas quando o denominador é zero, não há coeficiente angular. É possível verificar se duas linhas são paralelas quando seus coeficientes angulares forem iguais.</p>
+                <p>Um <strong>polígono</strong> é composto por várias linhas conectadas que não se cruzam, chamadas de lados. É possível calcular a área e o perímetro de um polígono.</p>
+                <p>Um <strong>triângulo</strong> é um polígono com três lados. Sejam $a$, $b$ e $c$ as medidas dos lados do triângulo. Seu semiperímetro é dado pela fórmula $p=\frac{a+b+c}{2}$. Sua área é dada pela fórmula $A=\sqrt{p(p-a)(p-b)(p-c)}$.</p>
+                <p>Um <strong>quadrilátero</strong> é um polígono com quatro lados.</p>
+                <p>Um <strong>quadrado</strong> é um quadrilátero com quatro lados de igual medida e todos os ângulos medindo 90°.</p>
+                <p>Um <strong>trapézio</strong> é um quadrilátero com apenas duas linhas paralelas entre si, chamadas de base maior e base menor. Sua altura é a distância perpendicular entre suas duas bases, dada pela fórmula $$
+                    h = \frac{
+                    \sqrt{(-a + b + c + d)(a - b + c + d)(a - b - c + d)(a - b + c - d)}
+                    }
+                    {2\vert a - b \vert}$$, onde $a$, $b$, $c$ e $d$ representam as medidas das duas bases e dos dois lados oblíquos, respectivamente. Sua área é dada pela fórmula $A=\frac{a+b}{2}\cdot h$.</p>
+            </li>
+            <!--<pre><code class="python">import math
+import abc
+
+
+class Ponto:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+    def distancia(self, other):
+        dx = other.x - self.x
+        dy = other.y - self.y
+        return math.sqrt(dx**2 + dy**2)
+
+
+class Linha:
+    def __init__(self, ponto1, ponto2):
+        self.ponto1 = ponto1
+        self.ponto2 = ponto2
+
+    def medida(self):
+        return self.ponto1.distancia(self.ponto2)
+
+    def coeficiente_angular(self):
+        if self.ponto2.x - self.ponto1.x == 0:
+            return None
+        return (self.ponto2.y - self.ponto1.y) / (self.ponto2.x - self.ponto1.x)
+
+    def eh_paralelo(self, other):
+        return self.coeficiente_angular() == other.coeficiente_angular()
+
+
+class Poligono(abc.ABC):
+    def __init__(self, lados):
+        self.lados = lados
+
+    def perimetro(self):
+        perimeter = 0
+        for lado in self.lados:
+            perimeter += lado.medida()
+        return perimeter
+
+    @abc.abstractmethod
+    def area(self):
+        pass
+
+
+class Triangulo(Poligono):
+    def __init__(self, ponto1, ponto2, ponto3):
+        lado1 = Linha(ponto1, ponto2)
+        lado2 = Linha(ponto2, ponto3)
+        lado3 = Linha(ponto3, ponto1)
+        super().__init__([lado1, lado2, lado3])
+
+    def area(self):
+        a = self.lados[0].medida()
+        b = self.lados[1].medida()
+        c = self.lados[2].medida()
+        p = (a + b + c) / 2
+        return math.sqrt(p * (p - a) * (p - b) * (p - c))
+
+
+class Quadrilatero(Poligono):
+    def __init__(self, ponto1, ponto2, ponto3, ponto4):
+        lado1 = Linha(ponto1, ponto2)
+        lado2 = Linha(ponto2, ponto3)
+        lado3 = Linha(ponto3, ponto4)
+        lado4 = Linha(ponto4, ponto1)
+        super().__init__([lado1, lado2, lado3, lado4])
+
+
+class Quadrado(Quadrilatero):
+    def area(self):
+        lado = self.lados[0].medida()
+        return lado**2
+
+
+class Trapezio(Quadrilatero):
+    def bases(self):
+        """retorna as bases do trapézio"""
+        for i in range(0, len(self.lados)):
+            for j in range(i + 1, len(self.lados)):
+                if self.lados[i].eh_paralelo(self.lados[j]):
+                    return [self.lados[i], self.lados[j]]
+
+    def altura(self):
+        bases = self.bases()
+
+        lados = self.lados
+        lados.remove(bases[0])
+        lados.remove(bases[1])
+
+        a = bases[0].medida()
+        b = bases[1].medida()
+        d = lados[0].medida()
+        c = lados[1].medida()
+
+        return math.sqrt((-a + b + c + d) * (a - b + c + d) * (a - b - c + d) * (a - b + c - d)) / (2 * abs(a - b))
+
+    def area(self):
+        bases = self.bases()
+        a = bases[0].medida()
+        b = bases[1].medida()
+        h = self.altura()
+        return ((a + b) / 2) * h
+
+
+def testar_linhas():
+    # testando linhas verticais
+    linha1 = Linha(Ponto(2, 4), Ponto(2, 6))
+    linha2 = Linha(Ponto(5, -3), Ponto(5, 7))
+    assert (2.0, 10.0, None, None, True) == (
+        linha1.medida(),
+        linha2.medida(),
+        linha1.coeficiente_angular(),
+        linha2.coeficiente_angular(),
+        linha1.eh_paralelo(linha2),
+    )
+
+    # testando linhas horizontais
+    linha1 = Linha(Ponto(-8, 4), Ponto(9, 4))
+    linha2 = Linha(Ponto(0, 7), Ponto(2, 7))
+    assert (17.0, 2.0, 0.0, 0.0, True) == (
+        linha1.medida(),
+        linha2.medida(),
+        linha1.coeficiente_angular(),
+        linha2.coeficiente_angular(),
+        linha1.eh_paralelo(linha2),
+    )
+
+    # testando linhas com coeficiente positivo
+    linha1 = Linha(Ponto(2, 7), Ponto(-0.5, 2))
+    linha2 = Linha(Ponto(3.5, 2), Ponto(6.5, 8))
+    assert (5.5901699437494745, 6.708203932499369, 2.0, 2.0, True) == (
+        linha1.medida(),
+        linha2.medida(),
+        linha1.coeficiente_angular(),
+        linha2.coeficiente_angular(),
+        linha1.eh_paralelo(linha2),
+    )
+
+    # testando linhas com coeficiente positivo
+    linha1 = Linha(Ponto(1.2, 4), Ponto(2, 6))  # y=2.5x+1
+    linha2 = Linha(Ponto(5, 9.5), Ponto(2, 2))  # y=2.5x-3
+    assert (2.154065922853802, 8.077747210701755, 2.5, 2.5, True) == (
+        linha1.medida(),
+        linha2.medida(),
+        linha1.coeficiente_angular(),
+        linha2.coeficiente_angular(),
+        linha1.eh_paralelo(linha2),
+    )
+
+    # testando linhas com coeficiente negativo
+    linha1 = Linha(Ponto(-2.75, 8), Ponto(-1.25, 2))
+    linha2 = Linha(Ponto(0.5, 4), Ponto(2, -2))
+    assert (6.18465843842649, 6.18465843842649, -4.0, -4.0, True) == (
+        linha1.medida(),
+        linha2.medida(),
+        linha1.coeficiente_angular(),
+        linha2.coeficiente_angular(),
+        linha1.eh_paralelo(linha2),
+    )
+
+    # testando linhas não paralelas
+    linha1 = Linha(Ponto(2.5, 2), Ponto(5.5, 8))  # y=2x-3
+    linha2 = Linha(Ponto(5, 9.5), Ponto(2, 2))  # y=2.5x-3
+    assert (6.708203932499369, 8.077747210701755, 2, 2.5, False) == (
+        linha1.medida(),
+        linha2.medida(),
+        linha1.coeficiente_angular(),
+        linha2.coeficiente_angular(),
+        linha1.eh_paralelo(linha2),
+    )
+
+    # testando linhas não paralelas
+    linha1 = Linha(Ponto(1.2, 4), Ponto(2, 6))  # y=2.5x+1
+    linha2 = Linha(Ponto(6, 15), Ponto(1, 5))  # y=2x+3
+    assert (2.154065922853802, 11.180339887498949, 2.5, 2, False) == (
+        linha1.medida(),
+        linha2.medida(),
+        linha1.coeficiente_angular(),
+        linha2.coeficiente_angular(),
+        linha1.eh_paralelo(linha2),
+    )
+
+
+def testar_triangulos():
+    equilatero = Triangulo(Ponto(11, 5), Ponto(8, 5), Ponto(9.5, (10 + 3 * math.sqrt(3)) / 2))
+    assert (9.0, 3.897114317029974) == (equilatero.perimetro(), equilatero.area())
+
+    isosceles = Triangulo(Ponto(4, 1), Ponto(5, 5), Ponto(6, 1))
+    assert (10.246211251235321, 4.0) == (isosceles.perimetro(), isosceles.area())
+
+    escaleno = Triangulo(Ponto(9, 1), Ponto(9, 3), Ponto(12, 1))
+    assert (8.60555127546399, 3.000000000000001) == (escaleno.perimetro(), escaleno.area())
+
+
+def testar_quadrilateros():
+    quadrado = Quadrado(Ponto(5, 1), Ponto(5, 3), Ponto(7, 3), Ponto(7, 1))
+    assert (8.0, 4.0) == (quadrado.perimetro(), quadrado.area())
+
+    trapezio_escaleno = Trapezio(Ponto(4, 4), Ponto(6, 6), Ponto(7, 6), Ponto(8, 4))
+    assert (10.06449510224598, 5.0) == (trapezio_escaleno.perimetro(), trapezio_escaleno.area())
+
+    trapezio_retangulo = Trapezio(Ponto(10, 3), Ponto(10, 5), Ponto(12, 7), Ponto(12, 3))
+    assert (10.82842712474619, 5.999999999999999) == (trapezio_retangulo.perimetro(), trapezio_retangulo.area())
+
+
+if __name__ == "__main__":
+    testar_linhas()
+    testar_triangulos()
+    testar_quadrilateros()</code></pre>-->
         </ol>
     </div>
 </div>
+
+<!--
+Substituir:
+ < → &lt; 
+<=→ &lt;=
+\s+$→
+`(\w+)`→<code>$1</code>
+`(\w+)(\(\))`→<code>$1</code>
+-->
