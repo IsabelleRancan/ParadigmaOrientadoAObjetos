@@ -9,5 +9,5 @@ class Calculadora:
         return Operacoes.somando(self), Operacoes.subtracao(self), Operacoes.multiplicacao(self), Operacoes.divisao(self)
     
 
-tentando = Calculadora(2,10)
+tentando = Calculadora(5,20)
 print(tentando.calculando())

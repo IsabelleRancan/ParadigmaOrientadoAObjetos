@@ -2,10 +2,6 @@ class Operacoes:
     "Possui as 4 operações matemáticas e a variável global pi=3.14"
     pi = 3.14
 
-    def __init__(self, a, b):
-        self.a = a
-        self.b = b 
-
     def somando(self):
         return self.a + self.b
     
