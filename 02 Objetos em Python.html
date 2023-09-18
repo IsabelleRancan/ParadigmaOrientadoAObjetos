@@ -565,12 +565,10 @@ class Note:
     </div>
 
     <div id="class-instance-static-methods">
-        <h2>Métodos de classe, de instância e estáticos</h2>
-        Em Python, existem três tipos de métodos e dois tipos de variáveis associadas a classes ou instâncias.
+        <h2>Métodos e variáveis, de instância e estáticos</h2>
+        <h3>Métodos e variáveis de instância:</h3>
 
-        <h3>Métodos e Variáveis de Instância:</h3>
-
-        <p><b>Instâncias</b> são sinônimos de <b>objetos</b>. <b>Métodos de instância</b> são aqueles que operam em instâncias da classe e têm acesso aos atributos específicos de uma única instância. Eles são definidos com o primeiro argumento, convencionalmente declarado como <code>self</code>, se referindo à própria instância. Métodos de instância são sinônimos de <b>métodos</b>. Atributos são sinônimos de <b>variáveis de instância</b> ou de <b>campos</b>. Alguns ainda consideram atributos sinônimos de <b>propriedades</b>, mas este termo é mais utilizado no sentido de atributos “somente-leitura”.</p>
+        <p><b>Instâncias</b> são sinônimos de <b>objetos</b>. <b>Métodos de instância</b> são aqueles que operam em instâncias da classe e têm acesso aos <b>atributos</b> específicos de uma única instância. Eles são definidos com o primeiro argumento, convencionalmente declarado como <code>self</code>, se referindo à própria instância. Métodos de instância são sinônimos de <b>métodos</b>. Atributos são sinônimos de <b>variáveis de instância</b> ou de <b>campos</b>. Alguns ainda consideram atributos sinônimos de <b>propriedades</b>, mas este termo é mais utilizado no sentido de atributos “somente-leitura”.</p>
 
         <pre><code class="python">class Dog:
         def __init__(self, name):
@@ -587,98 +585,155 @@ class Note:
 
         <p>Nesse exemplo, <code>bark</code> é um método de instância que opera em instâncias específicas de <code>Dog</code>.</p>
 
-        <h3>Métodos de classe vs Métodos estáticos</h3>
+        <h3>Métodos estáticos e variáveis de classe</h3>
 
-        <p><b>Métodos de classe</b> são métodos que operam na classe em si, em vez de em instâncias individuais. Eles são definidos com o decorador <code>@classmethod</code> e seu primeiro argumento se refere à própria classe em que o método foi chamado, e convencionalmente o declaramos como <code>cls</code>.</p>
-        <p><b>Métodos estáticos</b> são métodos que não têm acesso a instâncias ou à classe. Eles podem ser decorados com <code>@staticmethod</code> e não recebem argumentos especiais como <code>self</code> ou <code>cls</code>.</p>
+        <p><b>Variáveis de classe</b> agem como se fossem variável globais, só que estão associadas à classe. Assim como cada instância tem sua própria variável de instância com seu próprio valor, cada classe tem sua própria variável de classe, com seu próprio valor.</p>
+        <p>Semelhantemente, <b>métodos estáticos</b> agem como se fossem funções. Em vez de serem declarados no nível de módulo, são declarados no nível de classe. Eles podem ser decorados com <code>@staticmethod</code> e não recebem argumentos especiais como <code>self</code>. Em algumas linguagens de programação, métodos estáticos também são chamados de métodos de classe, mas no Python, métodos de classe têm a ver com outra coisa, que veremos mais para frente.</p>
+
+        <p>Você opta por variáveis de classe em vez de variáveis globais quando essas variáveis estão relacionadas apenas à classe em que foram declaradas. São um meio de organizar seu código encapsulando dados dentro da classe, de modo que para serem acessíveis, você deve especificar o nome da classe. Elas são frequentemente utilizadas para armazenar constantes, dados ou configurações relacionadas exclusivamente à classe ou dados compartilhados entre instâncias desta classe.</p>
+        <p>Por outro lado, as variáveis globais estão relacionadas ao módulo como um todo, o que inclui todas as classes que possam ter sido declaradas dentro desse módulo. Geralmente, variáveis globais são usadas para definir constantes ou configurações que são aplicáveis a diversas classes ou funções em um módulo, ou para armazenar dados que precisam ser acessados globalmente. Entretanto, é recomendável limitar o escopo de suas variáveis, evitando o uso excessivo de variáveis globais, o que pode tornar seu código menos organizado.</p>
+        <p>Da mesma forma, os métodos estáticos são a alternativa às funções quando se trata de realizar ações específicas relacionadas apenas a uma classe. Eles são úteis para funções utilitárias associadas a uma classe, mas que não requerem acesso a dados específicos de instâncias, operações que não dependem do estado de uma instância e funções que se encaixam logicamente na estrutura da classe.</p>
+        <p>Já funções regulares são independentes de classes. São ideais como funções utilitárias de uso geral, não diretamente vinculadas a uma classe específica, funções que executam operações envolvendo dados de diversas fontes ou funções usadas em diferentes módulos ou classes.</p>
+        <p>Em resumo, use métodos estáticos quando tiver funcionalidade intimamente associada a uma classe e use funções regulares quando precisar de funcionalidade independente, reutilizável e acessível globalmente. A escolha depende do contexto e do design do seu código.</p>
 
         <pre><code class="python">class Date(object):
+    num_instances = 0
+
     def __init__(self, year=0, month=0, day=0):
         self.day = day
         self.month = month
         self.year = year
+        Date.num_instances += 1
 
-    @classmethod
-    def from_string(cls, date_as_string):
-        list = [int(x) for x in date_as_string.split('-')]
-        date = cls(list[0], list[1], list[2])
+    def is_leap_year(self):
+        return self.year % 4 == 0 and self.year % 100 != 0 or self.year % 400 == 0
+
+    @staticmethod
+    def from_string(date_as_string):
+        list = [int(x) for x in date_as_string.split("-")]
+        date = Date(list[0], list[1], list[2])
         return date
 
-    @staticmethod
     def is_date_valid(date_as_string):
-        list = [int(x) for x in date_as_string.split('-')]
-        return list[0] &lt;= 3999 and list[1] &lt;= 12 and list[2] <= 31
+        list = [int(x) for x in date_as_string.split("-")]
+        return list[0] &lt;= 3999 and list[1] &lt;= 12 and list[2] &lt;= 31
 
 
-date_string = "2012-12-25"
+date1 = Date(2100, 12, 25)
+print(date1.day, date1.month, date1.year, date1.is_leap_year())
+print("Number of instances:", Date.num_instances)
+date_string = "2024-02-29"
 if Date.is_date_valid(date_string):
-    date = Date.from_string(date_string)
-    print(date.day, date.month, date.year)</code></pre>
+    date2 = Date.from_string(date_string)
+    print(date2.day, date2.month, date2.year, date2.is_leap_year())
+print("Number of instances:", Date.num_instances)</code></pre>
 
-        <h3>Variáveis de classe vs variáveis de instância</h3>
+        <h3>Variáveis de classe vs variáveis de instância vs variáveis globais</h3>
+        <p>Você pode importar e utilizar variáveis globais e funções diretamente de outros módulos. Mas para utilizar variáveis de classe e métodos estáticos, você deve especificar o nome da classe antes. Isso lhe dá um maior controle sobre o escopo dessas variáveis e métodos, garantindo uma organização mais eficaz do seu código.</p>
+        <p>Considere o módulo <code>test</code> com o seguinte código:</p>
 
-        <p><b>Variáveis de classe</b> agem como se fossem variável globais, só que estão associadas à classe. Assim como cada instância tem sua própria variável de instância com seu próprio valor, cada classe tem sua própria variável de classe, com seu próprio valor. O Python não faz distinção entre variáveis de classe e variáveis estáticas.</p>
+        <pre><code class="python">global_var = "a global variable"
 
-        <pre><code class="python">class Test:
+
+def func(par):  # Function
+    print(global_var, "and", par)
+
+
+class Test:
     class_var = "a class variable"  # Class variable
 
-    def __init__(self, parameter):
-        self.inst_var = parameter  # Instance variable
+    def __init__(self, par):
+        self.inst_var = par  # Instance variable
 
-    def test1(self, parameter):  # Instance method
-        print(self.inst_var, "and", parameter)
-
-    @classmethod
-    def test2(cls, parameter):  # Class method
-        print(cls.class_var, "and", parameter)
+    def test1(self, par):  # Instance method
+        print(self.inst_var, "and", par)
 
     @staticmethod
-    def test3(parameter):  # Static method
-        print(Test.class_var, "and", parameter)
+    def test3(par):  # Static method
+        print(Test.class_var, "and", par)
 
-    def test4(parameter):  # Static method
-        print(Test.class_var, "and", parameter)</code></pre>
+    def test4(par):  # Static method
+        print(Test.class_var, "and", par)</code></pre>
 
-        <p>A única diferença entre usar ou não o decorador <code>@staticmethod</code>, é que sem ele você não pode chamar um método estático através de uma instância. Como não é recomendável chamar métodos estáticos e métodos de classe através de instâncias, então esse decorador pode ser evitado.</p>
+        <p>A única diferença entre usar ou não a decoração <code>@staticmethod</code>, é que sem ela você não pode chamar um método estático através de uma instância. Como não é recomendável chamar métodos estáticos e métodos de classe através de instâncias, então essa decoração pode ser omitida.</p>
 
-        <p>O seguinte script chama cada um dos métodos através de uma instância e através de uma classe.</p>
-        <pre><code class="python">def func1():
+        <p>Considere o módulo <code>main</code> com o seguinte código:</p>
+        <pre><code class="python">from test import Test
+# from test.Test import test2 # error!
+from test import func
+from test import global_var
+
+
+def invoking_methods():
+    func("a argument")
+
     t = Test("a instance variable")
     t.test1("a argument")
     t.test2("a argument")
-    t.test3("a argument")
 
     Test.test2("other argument")
     Test.test3("other argument")
-    Test.test4("other argument")
 
-    t.test4("cannot do this")  # error!
-    Test.test1("this is also forbidden")  # error!</code></pre>
+    # t.test3("cannot do this")  # error!
+    # Test.test1("this is also forbidden")  # error!</code></pre>
 
-        <p>Observe que não é possível chamar um método estático não decorado através de uma instância, e não é possível chamar um método de instância através de uma classe.</p>
+        <p>A função <code>invoking_methods</code> chama cada um dos métodos através de uma instância e através de uma classe.</p>
+        <p>Observe as linhas 2, 17 e 18 comentadas. Não é possível importar métodos estáticos nem variáveis de classe diretamente, não é possível chamar um método estático não decorado através de uma instância, e não é possível chamar um método de instância através de uma classe.</p>
 
-        <p>Já o seguinte script tenta acessar variáveis de instância e de classe através de instâncias e da classe.</p>
-
-        <pre><code class="python">def func2():
+        <p>Considere o seguinte trecho de código adicionado ao módulo <code>main</code>:</p>
+        <pre><code class="python">def accessing_variables():
     t1 = Test("attribute 1")
     t2 = Test("attribute 2")
 
     print(t1.inst_var, "|", t1.class_var)
     print(t2.inst_var, "|", t2.class_var)
-    print(Test.class_var)
+    print(Test.class_var, "|", global_var)
 
     t1.inst_var = "attribute 1 modified"
     t1.class_var = "new attribute"
     Test.class_var = "class var modified"
+    # global_var = "a local var" # error!
 
     print(t1.inst_var, "|", t1.class_var)
     print(t2.inst_var, "|", t2.class_var)
-    print(Test.class_var)
+    print(Test.class_var, "|", global_var)
 
-    print(Test.inst_var)</code></pre>
+    # print(Test.inst_var) # error!</code></pre>
 
-        <p>Uma classe não consegue acessar variáveis de instâncias. Já uma instância consegue acessar as variáveis de sua classe como se fossem seus atributos. Se a instância não possuir um atributo com esse nome, ela procura acessar a variável de classe. Mas não é possível modificar variáveis de classe através da instância. Se tentar fazer isso, na verdade, estará criando um novo atributo. Portanto, não é recomendável acessar variáveis de classe através de instâncias.</p>
+        <p>A função <code>accessing_variables</code> acessa variáveis de instância e de classe por meio de instâncias e da classe, além de acessar uma variável global.</p>
 
+        <p>Observe a linha 12 comentada. Se uma função ou método não possuir uma variável local com esse nome, ela procura acessar a variável global. Mas não é possível modificar variáveis globais sem antes especificá-las como globais usando a palavra-chave <code>global</code>. Se tentar fazer isso, na verdade, o Python interpretará como uma tentativa de criar uma nova variável local. Portanto, não é recomendável acessar variáveis globais sem antes especificá-las como globais.</p>
+        <p>Agora observe a linha 18 comentada. Uma classe não consegue acessar variáveis de instâncias. Já uma instância consegue acessar as variáveis de sua classe como se fossem seus atributos. Se uma instância não possuir um atributo com esse nome, ela procura acessar a variável de classe. Mas não é possível modificar variáveis de classe através da instância. Se tentar fazer isso, na verdade, estará criando um novo atributo. Portanto, não é recomendável acessar variáveis de classe através de instâncias.</p>
+    </div>
+
+    <div id="what-are-objects">
+        <h2>O que são objetos?</h2>
+        <p>Em Python, <a href="https://linux.die.net/diveintopython/html/getting_to_know_python/everything_is_an_object.html">tudo é objeto</a>. Mas o que é um objeto? Linguagens de programação diferentes definem "objeto" de maneiras diversas. Em algumas, objetos são aqueles que possuem atributos e métodos; em outras, são aqueles que podem ser herdados.</p>
+
+        <p>No Python, a definição é mais flexível. Alguns objetos não têm atributos ou métodos, e nem todos os objetos podem ser herdados. No entanto, tudo é objeto no sentido de que pode ser atribuído a uma variável ou passado como argumento para uma função. Portanto, funções, classes, números são objetos! Por exemplo, todas as funções têm um atributo integrado chamado <code>doc</code>, que retorna a doc-string definida no código-fonte da função.</p>
+
+        <p>No Python, o atributo <code>__dict__</code> é um dicionário integrado ao objeto que armazena seus atributos e valores. A maioria dos objetos em Python possui seu próprio atributo <code>__dict__</code>:</p>
+
+        <pre><code class="python">class Test:
+    """uma classe de teste"""
+
+    class_var = 10
+
+    def test(self):
+        self.inst_var = 20
+
+
+def func(par):
+    """uma função que imprime os atributos `__doc__` e `__dict__` do parâmetro `par`"""
+    print("\n", par.__doc__, par.__dict__)
+
+
+t = Test()
+t.test()
+func(t)
+func(Test)
+func(func)
+</code></pre>
     </div>
 
     <div id="exercicios-2">

@@ -43,7 +43,7 @@ class Lista:
                 if concluida !=None:
                     t.concluida=concluida 
 
-    def obter_tarefa(self, filtro=None, nao_cocluidas=None):
+    def obter_tarefa(self, filtro=None, nao_concluidas=None):
         tarefas = sorted(self.tarefas, reverse = True)
         if nao_concluidas == True:
             tarefas = [t for t in tarefas if t.concluida != True]
