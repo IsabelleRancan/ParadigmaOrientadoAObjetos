@@ -8,9 +8,9 @@ class Operacoes:
     def subtracao(self):
         return self.a - self.b
     
-    def multiplicacao(self, multi=0):
+    def multiplicacao(self):
         return self.a * self.b
     
-    def divisao(self, divisao=0):
+    def divisao(self):
         if self.b!=0: 
             return self.a / self.b
