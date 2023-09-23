@@ -3,8 +3,11 @@ from math_operations import Operacoes
 class Calculadora:
     def __init__(self, a, b):
         self.a = a
-        self.b = b 
-        somando = Operacoes.somando()
+        self.b = b
 
-tentando = Calculadora(2,10)
-print(tentando.somando())
+    def calculando(self):
+        return Operacoes.somando(self), Operacoes.subtracao(self), Operacoes.multiplicacao(self), Operacoes.divisao(self)
+    
+
+tentando = Calculadora(5,20)
+print(tentando.calculando())

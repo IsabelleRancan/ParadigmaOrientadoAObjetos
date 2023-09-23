@@ -2,18 +2,15 @@ class Operacoes:
     "Possui as 4 operações matemáticas e a variável global pi=3.14"
     pi = 3.14
 
-    def somando(self, soma=0):
-        soma = self.a + self.b
-        return soma
+    def somando(self):
+        return self.a + self.b
     
-    def subtracao(self, subtracao=0):
-        subtracao = self.a - self.b
-        return subtracao
+    def subtracao(self):
+        return self.a - self.b
     
-    def multiplicacao(self, multi=0):
-        multi = self.a * self.b
-        return multi
+    def multiplicacao(self):
+        return self.a * self.b
     
-    def divisao(self, divisao=0):
-        divisao = self.a / self.b
-        return divisao
+    def divisao(self):
+        if self.b!=0: 
+            return self.a / self.b
