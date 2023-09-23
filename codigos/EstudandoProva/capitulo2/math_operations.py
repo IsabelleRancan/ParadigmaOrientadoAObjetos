@@ -14,3 +14,6 @@ class Operacoes:
     def divisao(self):
         if self.b!=0: 
             return self.a / self.b
+
+    def raiz(self):
+        return self.b ** 2
