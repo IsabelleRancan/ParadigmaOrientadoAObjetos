@@ -118,6 +118,7 @@ class Item(abc.ABC):
         #itera por colaboradores...
         print("Colaboradores:")
         for colaborador in self.colaboradores:
+            "como funciona isso e  que tem a ver a class enum lá em cima?"
             #...printando seu atributo nome
             print("    ", colaborador.nome)
 
@@ -125,6 +126,7 @@ class Item(abc.ABC):
 #HERANÇA
 #classe filha DVD herda de Item
 class DVD(Item):
+    "ele não precisa colocar o método prazo e colocar o prazo dentro dele?"
     #define o atributo "prazo", no qual a superclasse delegou a responsabilidade para as filhas
     prazo = 7
     #solicita os valores dos atributos por parametro, onde requer todos os atributos da classe herdada ( titulo, assunto,colaboradores)
@@ -142,6 +144,7 @@ class DVD(Item):
         #... esta opção para printar o atributo particular da classe filha "genero"
         print("Generos:")
         for genero in self.genero:
+            "como ele vai saber que genero é uma list? e como o usuário vai poder declarar mais que um?"
             print("    ", genero.value)
 
 #as demais classe seguem o exato raciocinio da classe DVD...
@@ -175,7 +178,7 @@ class Revista(Item):
 #instanciação de objetos para teste.
 #(ver no terminal)
 print('======================================================================')
-
+"entender essa instância aqui*"
 colab_pedro = Colaborador("Pedro", Papel.ATOR)
 colab_henrique = Colaborador("Henrique", Papel.AUTOR)
 colaboradores = [colab_pedro, colab_henrique]
