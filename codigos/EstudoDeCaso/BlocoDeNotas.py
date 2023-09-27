@@ -92,14 +92,6 @@ class Menu:
             else :
                 print('Opção inválida') 
 
-
-
-
-
-
-
-
-
 teste = Menu()
 teste.show() 
 
