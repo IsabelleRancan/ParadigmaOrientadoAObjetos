@@ -9,7 +9,7 @@ class Documentos(abc.ABC):
         self.data = data
         self.tamanho = tamanho
 
-    @abc.abstractclassmethod
+    #@abc.abstractclassmethod
     def unidade_medida(self, medida):
         "método de medidas que estará presente em todas as classes, fazer mais tarde"
         pass
@@ -23,6 +23,10 @@ class Pdf(Documentos):
     
     def __init__(self, autor, data, tamanho):
         super().__init__(autor,data, tamanho)
+        print (f"Especificações sobre o documento {self}.")
+        print (f"Autor: {self.autor}.")
+        print (f"Data {self.data}.")
+        print (f"Tamanho {self.tamanho}.")
 
 class DocsWord(Documentos):
     "nesse método não preciso mais pegar nenhum atributo novo"
@@ -45,3 +49,5 @@ class Video(Documentos):
         self.duracao = duracao
         super().__init__(autor,data, tamanho)
 
+teste = Pdf("ana", "06/05/2004", 5)
+print()
