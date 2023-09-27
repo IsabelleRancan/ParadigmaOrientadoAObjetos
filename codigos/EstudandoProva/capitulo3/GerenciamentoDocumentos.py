@@ -22,5 +22,26 @@ class Pdf(Documentos):
     "nesse método não preciso mais pegar nenhum atributo novo"
     
     def __init__(self, autor, data, tamanho):
-        super().__init__()
+        super().__init__(autor,data, tamanho)
+
+class DocsWord(Documentos):
+    "nesse método não preciso mais pegar nenhum atributo novo"
+    
+    def __init__(self, autor, data, tamanho):
+        super().__init__(autor,data, tamanho)
+
+class Imagem(Documentos):
+    "nesse método estou adicionando o parametro dimensoes"
+    
+    def __init__(self, autor, data, tamanho, dimensoes):
+        self.dimensoes = dimensoes
+        super().__init__(autor,data, tamanho)
+
+class Video(Documentos):
+    "nesse método estou adicionando dimencoes e a duração"
+    
+    def __init__(self, autor, data, tamanho, dimensoes, duracao):
+        self.dimensoes = dimensoes
+        self.duracao = duracao
+        super().__init__(autor,data, tamanho)
 
