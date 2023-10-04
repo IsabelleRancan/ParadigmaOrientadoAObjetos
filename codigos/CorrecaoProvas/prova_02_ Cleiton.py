@@ -40,7 +40,7 @@ class Genero(Enum):
     DRAMA = "Drama"
     COMEDIA = "Comedia"
     TERROR = "Terror"
-    MUSICAL = "Munsical"
+    MUSICAL = "Musical"
 
 #Classe Item é uma classse abstrata, que por padrão não deve instanciar objetos, apenas ser herdada pelos sua classes filhas
 #com intuito de possibilitar reaprovitamento de codigo, ja que tudo que consta nela será usado em cada classe filha.
