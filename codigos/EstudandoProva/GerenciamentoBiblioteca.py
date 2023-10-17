@@ -2,13 +2,18 @@ import abc
 from datetime import datetime, timedelta
 from enum import Enum
 
-class Colaboradores(Enum):
+class TipoColaborador(Enum):
     "criando a class colabroradores e adicionando valores dentro deles com o enum"
     AUTOR = "Autor"
     ATOR = "Ator"
     DIRETOR = "Diretor"
     EDITOR = "Editor"
     MUSICO = "Musico"
+
+class Colaborador:
+    def __init__(self, nome, tipo):
+        self.nome = nome
+        self.tipo = tipo
 
 class Item (abc.ABC):
     "criando a classe principal e adicionando os principais atributos"
@@ -18,8 +23,9 @@ class Item (abc.ABC):
         self.colaboradores = colaboradores 
         self.emprestado = None
 
+    @property
     @abc.abstractmethod 
-    def Prazo(self):
+    def prazo(self):
         pass
 
     def Disponibilidade(self):
@@ -67,7 +73,9 @@ class Item (abc.ABC):
         print ("----------------------------------------------------")
         print (f" Título: {self.titulo}")
         print (f" Assunto: {self.assunto}")
-        print (f" Colaboradores: {self.colaboradores}") #testar se esse trem de colaboradores funciona assim ou se eu tenho que colocar a função 
+        print (f" Colaboradores:") #testar se esse trem de colaboradores funciona assim ou se eu tenho que colocar a função 
+        for colaborador in self.colaboradores:
+            print(f"    {colaborador.nome} ({colaborador.tipo.value})")
         print (f" Devolução: {self.PrazoDevolucao()}")
 
 class Livro (Item):
@@ -118,8 +126,10 @@ class Revista (Item):
         print(f"Volume: {self.volume}")
         print(f"Edição: {self.edicao}")
 
-#teste_colaborador = ("Ana", Colaboradores.AUTOR)
-#teste_colaborador2 = ("Maria", Colaboradores.EDITOR)
+teste_colaborador =  Colaborador("Anaa", TipoColaborador.AUTOR)
+teste_colaborador2 = Colaborador("Maria", TipoColaborador.EDITOR)
 
-#colab = (teste_colaborador, teste_colaborador2)
-#livro1 = Livro("Harry Potter", "Fantasia", "teste", 12345)
+colab = (teste_colaborador, teste_colaborador2)
+livro1 = Livro("Harry Potter", "Fantasia", colab, 12345)
+
+livro1.informacoes()
