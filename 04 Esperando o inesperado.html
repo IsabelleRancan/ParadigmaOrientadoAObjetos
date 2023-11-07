@@ -262,7 +262,54 @@ finally:
         <p>A instrução <code>print</code> na cláusula <code>finally</code> é executada independentemente do que aconteça, o que é particularmente útil para realizar tarefas como limpar uma conexão de banco de dados aberta, fechar um arquivo aberto ou enviar um fechamento de conexão pela rede após a execução do código, mesmo se ocorrer uma exceção. A cláusula <code>finally</code> também desempenha um papel crucial ao executar uma instrução <code>return</code> de dentro de uma cláusula <code>try</code>, pois garante que o tratamento <code>finally</code> seja executado antes de retornar o valor.</p>
         <p>O bloco <code>try</code> pode ser seguido por qualquer combinação de cláusulas <code>except</code>, <code>else</code> e <code>finally</code>, embora <code>else</code> não possa ser usado sozinho. Se mais de uma for usada, as cláusulas <code>except</code> devem vir primeiro, seguidas por <code>else</code> e, por fim, a cláusula <code>finally</code>. As cláusulas <code>except</code> devem ser ordenadas da mais específica para a mais genérica.</p>
 
+        <p>Vamos ver um exemplo de rastreamento de exceção com tratamento:</p>
+        <pre><code>def f4(p):
+    print("início de f4")
+    if p == 0:
+        raise ZeroDivisionError("Zero é inválido!")
+    elif p > 10 or p &lt; 1:
+        raise IndexError("Somente entre 1 e 10!")
+    elif not p.is_integer():
+        raise TypeError("Somente inteiro!")
+    elif p % 2:
+        raise ValueError("Somente par!")
+    print("fim de f4")
+
+
+def f3(p):
+    print("início de f3")
+    try:
+        f4(p)
+    except ZeroDivisionError as e:
+        print(e)
+    print("fim de f3")
+
+
+def f2(p):
+    print("início de f2")
+    try:
+        f3(p)
+    except IndexError as e:
+        print(e)
+    print("fim de f2")
+
+
+def f1(p):
+    print("início de f1")
+    try:
+        f2(p)
+    except TypeError as e:
+        print(e)
+    print("fim de f1")
+
+
+if __name__ == "__main__":
+    f1(float(input()))</code></pre>
+
+        <p>Qual a saída para cada uma das seguintes entradas? 0, -2, 2.5, 7, 8, saturno.</p>
+
         <div id="4-1-4-the-exception-hierarchy">
+            <h3>Hierarquia de exceções</h3>
             <p>Duas principais classes de exceção incorporadas, <code>SystemExit</code> e <code>KeyboardInterrupt</code>, herdam diretamente de <code>BaseException</code> em vez de <code>Exception</code>. A exceção <code>SystemExit</code> surge naturalmente quando o programa é encerrado, frequentemente devido a uma chamada à função <code>sys.exit</code>. Essa exceção permite a realização de tarefas de limpeza antes do programa terminar, mas geralmente é tratada implicitamente dentro de uma cláusula <code>finally</code>. Se tratada explicitamente, geralmente é levantada novamente para evitar que o programa pare seu término. Ela herda diretamente de <code>BaseException</code> para evitar ser tratada acidentalmente em cláusulas genéricas que tratam todas as exceções normais.</p>
             <p>A exceção <code>KeyboardInterrupt</code> é comum em programas de linha de comando e ocorre quando o usuário interrompe deliberadamente a execução do programa com uma combinação de teclas (geralmente <kbd>Ctrl+C</kbd>). Assim como <code>SystemExit</code>, ela quase sempre resulta no término do programa, com qualquer tarefa de limpeza tratada dentro de blocos <code>finally</code>.</p>
 
@@ -270,8 +317,48 @@ finally:
                 <img id='4-1-4-exception-hierarchy' alt='hierarquia de exceções'>
             </p>
             <p>Usar a cláusula <code>except:</code> sem especificar um tipo de exceção captura todas as subclasses de <code>BaseException</code>, incluindo todas as exceções e as duas especiais, <code>SystemExit</code> e <code>KeyboardInterrupt</code>. No entanto, essas duas exceções geralmente requerem tratamento especial, portanto, geralmente não é recomendado usar a declaração <code>except:</code> sem argumentos. Se você deseja capturar todas as exceções exceto <code>SystemExit</code> e <code>KeyboardInterrupt</code>, deve capturar explicitamente <code>Exception</code>. A maioria dos desenvolvedores Python considera <code>except:</code> sem um tipo como um erro e irá marcá-lo durante a revisão de código. Se você pretende capturar todas as exceções, é melhor usar explicitamente <code>except BaseException:</code>.</p>
+
+            <p>Observe esse exemplo mais <strike>complexo</strike> completo:</p>
+            <pre><code>import sys
+
+some_exceptions = [ValueError, TypeError, AttributeError, None]
+
+stop = False
+
+while not stop:
+    try:
+        choice = int(input())
+        if choice &lt; 0:
+            print("Exiting...")
+            sys.exit()
+        exception = some_exceptions[choice]
+        print(f"Raising {exception}")
+        if exception:
+            raise exception("An error")
+    except ValueError:
+        print("Caught a ValueError!")
+    except TypeError:
+        print("Caught a TypeError!")
+    except Exception as e:
+        print("Caught some other error:", e.__class__.__name__)
+        stop = True
+    except SystemExit:
+        print("Caught a exit command! Exiting...")
+        raise
+    except KeyboardInterrupt:
+        print("Cannot interrupt program this way!")
+    else:
+        print("This code called if there is no exception")
+    finally:
+        print("This cleanup code is always called")
+
+print("End of program")</code></pre>
+
+            <p>Quais das seguintes entradas são capazes de encerrar o programa? -4, 0, 1, 2, 3, 4, [Ctrl]+[C], string. Qual a saída para cada entrada?</p>
+
         </div>
         <div id="4-1-5-defining-our-own-exceptions">
+            <h3>Definindo suas próprias exceções</h3>
             <p>Quando nenhuma das exceções incorporadas é adequada, é possível definir exceções personalizadas. O nome da classe geralmente indica o que deu errado, e informações adicionais podem ser fornecidas por meio de argumentos arbitrários no inicializador. Embora seja possível estender <code>BaseException</code> diretamente, isso raramente é necessário ou aconselhável.</p>
 
             <pre><code>class InvalidWithdrawal(Exception):
@@ -346,7 +433,7 @@ class Inventory:
         pass
 
     def purchase(self, item_type):
-        """If the item is not locked, raise an
+        """If the item is locked, raise an
         exception. If the item_type  does not exist,
         raise an exception. If the item is currently
         out of stock, raise an exception. If the item
@@ -403,7 +490,7 @@ class User:
         """Encrypt the password with the username and return
         the sha digest."""
         password = self.username + password
-        binary_password = binary_password.encode()
+        binary_password = password.encode()
         return hashlib.sha256(binary_password).hexdigest()
 
     def check_password(self, password):
@@ -445,7 +532,7 @@ class PasswordTooShort(AuthException):
     def add_user(self, username, password):
         if self.get_user(username):
             raise UsernameAlreadyExists(username)
-        if len(password) < 6:
+        if len(password) &lt; 6:
             raise PasswordTooShort(username)
         self.users.append(User(username, password))</code></pre>
 
@@ -670,7 +757,5 @@ Substituir:
  < → &lt; 
 <=→&lt;=
 \s+$→
-`(\w+)`→<code>$1</code>
-`(\w+)(\(\))`→<code>$1</code>
 `.+?`→<code>$1</code>
 -->
