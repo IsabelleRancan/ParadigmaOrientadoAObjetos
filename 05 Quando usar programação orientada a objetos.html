@@ -167,8 +167,7 @@ square.perimeter()</code></pre>
         <p>A propósito, não é por que um código orientado a objetos é pior que seu correspondente funcional, que orientação a objetos é pior. Talvez seja apenas código mal escrito. Podemos melhorar a API de polígonos para facilitar seu uso pelo cliente:</p>
 
         <pre><code>class Polygon2(Polygon):
-    def __init__(self, points=None):
-        points = points if points else []
+    def __init__(self, points=[]):
         self.vertices = []
         for point in points:
             if isinstance(point, tuple):
@@ -209,8 +208,8 @@ print(c.get_name())</code></pre>
         <p>Essa versão <i>boilerplate</i> faz exatamente a mesma coisa que a seguinte simples API:</p>
         <pre><code>class Color:
  def __init__(self, rgb_value, name):
- self.rgb_value = rgb_value
- self.name = name</code></pre>
+    self.rgb_value = rgb_value
+    self.name = name</code></pre>
 
         <p>O cliente da API mais simples soa mais natural:</p>
 
@@ -289,10 +288,10 @@ print(c.name)</code></pre>
         <div id="5-2-3-deciding-when-to-use-properties">
             <h3>Decidindo quando usar propriedades</h3>
             <p>Tecnicamente em Python, propriedades e métodos são considerados atributos. A diferença é que métodos são atributos invocáveis.</p>
-            <p>Basicamente quando algo de um objeto se refere a uma ação, então é um método. Ou seja, ao invocar um método, este deve "fazer" alguma coisa.Por isso que nomes de métodos geralmente são verbos.
+            <p>Basicamente quando algo de um objeto se refere a uma ação, então é um método. Ou seja, ao invocar um método, este deve "fazer" alguma coisa. Por isso que nomes de métodos geralmente são verbos.
             <p>Já, se for um dado, então pode ser um atributo padrão ou uma propriedade. Nomes de atributos e propriedades geralmente são substantivos. Em geral, use atributo padrão a menos que você queira manter um maior controle no acesso e modificação do atributo. A diferença entre atributos padrão e propriedades é que você consegue realizar operações personalizadas ao obter, modificar ou excluir uma propriedade.</p>
             <p>Um caso de uso comum para propriedades é deixar em <i>cache</i> valores difíceis de calcular, ou que são caros de obter, como uma requisição web ou consulta de banco de dados. Assim, o valor é armazenado localmente para evitar repetidos cálculos caros.</p>
-            <p>A estratégia de <i>cache</i> funciona assim: a primeira vez que um valor é soclicitado, realizamos o cálculo, consulta ou requisição, e armazenamos o resultado num atributo privado ou numa API de caching dedicada. Das próximas vezes que o valor for soclicitado, basta retornar o valor armazenado. Podemos estipular um prazo para o cache, que ao encerrar, é realizado o processo novamente, para manter o valor atualizado. Exemplo:</p>
+            <p>A estratégia de <i>cache</i> funciona assim: a primeira vez que um valor é solicitado, realizamos o cálculo, consulta ou requisição, e armazenamos o resultado num atributo privado ou numa API de caching dedicada. Das próximas vezes que o valor for solicitado, basta retornar o valor armazenado em cache. Podemos estipular um prazo para o cache, que ao encerrar, é realizado o processo novamente, para manter o valor atualizado. Exemplo:</p>
             <pre><code>from urllib.request import urlopen
 
 class WebPage:
@@ -336,7 +335,45 @@ True</code></pre>
 
             <p>Métodos setters são úteis para validação, como já vimos, mas também podem ser usados para redirecionar um valor para outro local. Por exemplo, poderíamos adicionar um método setter ao <code>content</code> da classe <code>WebPage</code> que faz o login automaticamente em nosso servidor web e faz o upload de uma nova página sempre que o valor é modificado.</p>
         </div>
+        <div id="5-2-4">
+            <h3>Exercícios</h3>
+            <ol class="ecxs">
+                <li>
+                    <p><b>Adicionando Expiração ao Cache</b></p>
+
+                    <p>Modifique a classe `WebPage` para incluir um atributo de expiração no cache. Este atributo representa o período durante o qual o conteúdo da página é considerado válido. Após esse período, ao solicitar o conteúdo, a página deve ser recarregada automaticamente. Siga as etapas abaixo:</p>
+                    <ol type="a">
+                        <li>
+                            <b>Atributo de Expiração:</b>
+                            <ul>
+                                <li>Adicione um novo atributo chamado `cache_timeout` à classe `WebPage`. Este atributo deve representar o tempo de expiração do cache em segundos.</li>
+                                <li>Escolha um valor padrão para `cache_timeout`, mas que possa ser modificado depois através de métodos getter e setter.</li>
+                            </ul>
+                        </li>
+
+                        <li>
+                            <b>Recarregamento Automático:</b>
+                            <ul>
+                                <li>Modifique o método `content` para verificar se o cache está expirado antes de retornar o conteúdo.</li>
+                                <li>Se o cache estiver expirado, recarregue o conteúdo da página e atualize o timestamp de expiração do cache.</li>
+                                <li>Utilize o módulo `time` para gerenciar os timestamps.</li>
+                            </ul>
+                        </li>
+
+                        <li>
+                            <b>Exemplo de Uso:</b>
+                            <ul>
+                                <li>Crie uma instância da classe `WebPage` com uma URL de sua escolha.</li>
+                                <li>Configure um tempo de expiração para o cache (em segundos).</li>
+                                <li>Solicite o conteúdo da página várias vezes e observe se o conteúdo é recarregado após o período de expiração.</li>
+                            </ul>
+                        </li>
+                    </ol>
+                </li>
+            </ol>
+        </div>
     </div>
+
 
     <!-- exercício
 
@@ -348,18 +385,3 @@ propriedade nome completo, retorna nome e sobrenome.
 
 propriedade média, depende de notas -->
 </div>
-
-<!--
-Substituir:
-×→\times
- → 
-–→-
-Θ→\Theta
-Ω→\Omega
- < → \lt 
- < → &lt; 
-<=→&lt;=
-\s+$→
-`(.+?)`→<code>$1</code>
-\*\*(.+?)\*\*→<b>$1</b>
--->
