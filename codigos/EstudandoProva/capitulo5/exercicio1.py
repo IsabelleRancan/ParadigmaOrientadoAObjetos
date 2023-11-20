@@ -38,4 +38,4 @@ now = time.time()
 content2 = webpage.content
 print("Tempo de busca:", time.time() - now)
 
-print("Conteúdos iguais?", content2 == content1)
+print("Conteúdos iguais?", content2 == content1) #comparando os conteúdos e vendo se eles estão iguais ou não 
