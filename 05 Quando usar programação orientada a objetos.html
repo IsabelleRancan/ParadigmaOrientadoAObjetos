@@ -341,29 +341,29 @@ True</code></pre>
                 <li>
                     <p><b>Adicionando Expiração ao Cache</b></p>
 
-                    <p>Modifique a classe `WebPage` para incluir um atributo de expiração no cache. Este atributo representa o período durante o qual o conteúdo da página é considerado válido. Após esse período, ao solicitar o conteúdo, a página deve ser recarregada automaticamente. Siga as etapas abaixo:</p>
+                    <p>Modifique a classe <code>WebPage</code> para incluir um atributo de expiração no cache. Este atributo representa o período durante o qual o conteúdo da página é considerado válido. Após esse período, ao solicitar o conteúdo, a página deve ser recarregada automaticamente. Siga as etapas abaixo:</p>
                     <ol type="a">
                         <li>
                             <b>Atributo de Expiração:</b>
                             <ul>
-                                <li>Adicione um novo atributo chamado `cache_timeout` à classe `WebPage`. Este atributo deve representar o tempo de expiração do cache em segundos.</li>
-                                <li>Escolha um valor padrão para `cache_timeout`, mas que possa ser modificado depois através de métodos getter e setter.</li>
+                                <li>Adicione um novo atributo privado chamado <code>cache_timeout` à classe `WebPage</code>. Este atributo deve representar o tempo de expiração do cache em segundos.</li>
+                                <li>Escolha um valor padrão para <code>cache_timeout</code>, mas que possa ser modificado depois através de métodos decorados @property e @setter.</li>
                             </ul>
                         </li>
 
                         <li>
                             <b>Recarregamento Automático:</b>
                             <ul>
-                                <li>Modifique o método `content` para verificar se o cache está expirado antes de retornar o conteúdo.</li>
+                                <li>Modifique o método <code>content</code> para verificar se o cache está expirado antes de retornar o conteúdo.</li>
                                 <li>Se o cache estiver expirado, recarregue o conteúdo da página e atualize o timestamp de expiração do cache.</li>
-                                <li>Utilize o módulo `time` para gerenciar os timestamps.</li>
+                                <li>Utilize o módulo <code>time</code> para gerenciar os timestamps.</li>
                             </ul>
                         </li>
 
                         <li>
                             <b>Exemplo de Uso:</b>
                             <ul>
-                                <li>Crie uma instância da classe `WebPage` com uma URL de sua escolha.</li>
+                                <li>Crie uma instância da classe <code>WebPage</code> com uma URL de sua escolha.</li>
                                 <li>Configure um tempo de expiração para o cache (em segundos).</li>
                                 <li>Solicite o conteúdo da página várias vezes e observe se o conteúdo é recarregado após o período de expiração.</li>
                             </ul>
@@ -373,8 +373,242 @@ True</code></pre>
             </ol>
         </div>
     </div>
+    <div id="5-3-manager-objects">
+        <h2>Gerenciador de objetos</h2>
+        <p>Existem simples classes de objetos cujos atributos são tipos simples como strings e listas, e os métodos operam apenas em cima desses atributos. Mas também há classes de objetos mais complexos, cujos atributos são objetos, e métodos são orquestradores dos objetos. Essas classes de objetos gerenciadores funcionam como delegadores de tarefas a outros objetos, praticamente não operando diretamente em seus próprios atributos.</p>
+        <p>Como exemplo, vamos criar uma classe para substituir ocorrências de textos em arquivos numa pasta compactada. Essa classe faz o seguinte:</p>
+        <ol>
+            <li>Descompacta uma pasta,</li>
+            <li>Realiza uma busca e substituição nos arquivos descompactados e</li>
+            <li>Recompacta os arquivos na pasta.</li>
+        </ol>
+        <p>Os atributos são o nome do arquivo compactado, a string de busca e a string de substituição. Também teremos uma pasta temporária para realizar o processo.</p>
+        <pre><code>import sys
+import shutil
+import zipfile
+from pathlib import Path
 
 
+class ZipReplace:
+    def __init__(self, filename, search_string, replace_string):
+        self.filename = filename
+        self.search_string = search_string
+        self.replace_string = replace_string
+        self.temp_directory = Path(f"unzipped-{filename}")</code></pre>
+        <p>Implementamos um método gerenciador, que apenas delega tarefas:</p>
+        <pre><code>def zip_find_replace(self):
+        self.unzip_files()
+        self.find_replace()
+        self.zip_files()</code></pre>
+        <p>Poderíamos realizar esses três passos em apenas um método, ou então, nem criar classes e fazer tudo em um único script. Mas modularizar possui as seguintes vantagens:</p>
+        <ul>
+            <ol><b>Legibilidade:</b> Como cada etapa está bem separada, fica mais fácil de ler o código e ter uma noção geral do que está se passando. Os próprios métodos são autodocumentáveis.</ol>
+            <ol><b>Extensibilidade:</b> Podemos facilmente adaptar o código para outras possibilidades, como descompactar arquivos TAR em vez de ZIP, sem ter que alterar muita parte do código, e melhor, sem CTRL+C, CTRL+V.</ol>
+            <ol><b>Baixo acoplamento:</b> Modularidade nos proporciona partes mais independentes. Um cliente poderia muito bem utilizar nossa API para buscar e substituir ocorrências em arquivos de pastas descompactadas.</ol>
+        </ul>
+        <p>Os métodos delegados:</p>
+        <pre><code>def unzip_files(self):
+        self.temp_directory.mkdir()
+        with zipfile.ZipFile(self.filename) as zip:
+            zip.extractall(self.temp_directory)
+
+    def find_replace(self):
+        for filename in self.temp_directory.iterdir():
+            with filename.open() as file:
+                contents = file.read()
+            contents = contents.replace(self.search_string, self.replace_string)
+            with filename.open("w") as file:
+                file.write(contents)
+
+    def zip_files(self):
+        with zipfile.ZipFile(self.filename, "w") as file:
+            for filename in self.temp_directory.iterdir():
+                file.write(filename, filename.name)
+        shutil.rmtree(self.temp_directory)
+
+
+if __name__ == "__main__":
+    ZipReplace(*sys.argv[1:4]).zip_find_replace()</code></pre>
+
+        <p>Você pode executar o programa diretamente assim:</p>
+        <pre><code>python zipsearch.py hello.zip hello hi</code></pre>
+        <p>Essa API pode ser usada por diversos clientes, que poderia fornecer uma interface gráfica, acessar pastas compactadas de servidores remotos, enfim.</p>
+
+        <div id="5-3-1-removing-duplicate-code">
+            <h3>Removendo código duplicado</h3>
+            <p>Geralmente você se deparará com códigos genéricos cuja lógica pode ser aplicada em outros lugares. Vejamos alguns motivos do por quê duplicar código é ruim.</p>
+            <p>Pensando a curto prazo, pode ser mais prático copiar e colar um código de um sistema ou outro, fazendo devidas adaptações. Mas um código copiado vem com muitos vestígios, como comentários específicos, variáveis e lógicas.</p>
+            <p>Há uma máxima na programação que o você que escreveu um código hoje, não é o mesmo você que lerá o código amanhã. Isso significa que o que fazia sentido quando foi escrito pode não mais ser facilmente lembrado após algum tempo. Quanto mais quando não foi você que escreveu um código. Dois trechos de código semelhantes podem levantar dúvidas como qual a diferença entre eles, as semelhanças, qual deles deve ser executado em quais circustâncias, enfim. Quando escrevemos código, antes de mais nada, este deve ser legível.</p>
+            <p>O autor nos dá um exemplo que ele passou, de lidar com código de alguém que tinha cerca de 300 linhas mal escritas repetidas em três lugares diferentes. Depois de passar um mês trabalhando no código, ele compreendeu as diferenças e semelhanças, e que muita coisa poderia ser reaproveitada. No final, ele refatorou as 900 linhas de código em cerca de 20!</p>
+            <p>Devemos também procurar escrever código manutenível. Códigos duplicados podem ser um pesadelo. Precisa manter os dois sincronizados à medida que são atualizados, lembrando as partes que são diferentes. Isso é muito sucetível a bugs.</p>
+            <p>Em um sistema de produção, código é lido e modificado muito mais vezes que escrito.</p>
+            <p>Uma maneira de evitar código duplicado é mover a parte comum para dentro de uma função, e utilizar parâmetros para lidar com as diferenças. Buscar maior generalidade no código é alcançado evitando valores fixos ("chumbados") e preferindo variáveis ou até mesmo arquivos de propriedades. Duas formas de reaproveitar código em POO é através de composição ou herança, evitando, assim, código duplicado. </p>
+            <p>Para evitar a duplicação de código, uma estratégia eficaz é extrair a parte comum para uma função e utilizar parâmetros para lidar com as diferenças. Buscar maior generalidade no código é alcançado evitando valores fixos e preferindo variáveis ou até mesmo arquivos de propriedades. Na programação orientada a objetos (POO), duas abordagens para reutilizar código são a composição e a herança, proporcionando uma maneira eficiente de evitar duplicação de código.</p>
+
+        </div>
+        <div id="5-3-2-in-practice">
+            <h3>Na prática</h3>
+            <p>Suponha agora que sejamos contratados para alterar a resolução de imagens em uma pasta compactada. Nosso primeiro impulso poderia ser salvar uma cópia de <code>ZipReplace</code> e alterar apenas o método <code>find_replace</code> para <code>scale_image</code>. O que poderia dar errado?</p>
+            <p>Vamos propor uma solução usando herança:</p>
+            <pre><code>import sys
+import shutil
+import zipfile
+from pathlib import Path
+from PIL import Image
+
+
+class ZipProcessor:
+    def __init__(self, zipname):
+        self.zipname = zipname
+        self.temp_directory = Path(f"unzipped-{zipname[:-4]}")
+
+    def process_zip(self):
+        self.unzip_files()
+        self.process_files()
+        self.zip_files()
+
+    def unzip_files(self):
+        self.temp_directory.mkdir()
+        with zipfile.ZipFile(self.zipname) as zip:
+            zip.extractall(self.temp_directory)
+
+    def zip_files(self):
+        with zipfile.ZipFile(self.zipname, "w") as file:
+            for filename in self.temp_directory.iterdir():
+                file.write(filename, filename.name)
+        shutil.rmtree(self.temp_directory)</code></pre>
+
+            <p>Observe que as mudança tornaram o código mais generalizado. Essa classe não implementa o método <code>process_files</code>, que deve ser implementado pelas classes filhas. Ou seja, é uma classe abstrata! Fica como exercício torná-la abstrata na prática.</p>
+
+            <p>A nova versão de <code>ZipReplace</code> ficou mais enxuta:</p>
+            <pre><code>class ZipReplace(ZipProcessor):
+    def __init__(self, filename, search_string, replace_string):
+        super().__init__(filename)
+        self.search_string = search_string
+        self.replace_string = replace_string
+
+    def process_files(self):
+        """perform a search and replace on all files in the
+        temporary directory"""
+        for filename in self.temp_directory.iterdir():
+            with filename.open() as file:
+                contents = file.read()
+            contents = contents.replace(self.search_string, self.replace_string)
+            with filename.open("w") as file:
+                file.write(contents)</code></pre>
+            <p>Aqui tomamos o cuidado de comentar o método <code>process_files</code> pois agora ele não está mais tão óbvio quanto antes.</p>
+
+            <p>A classe de imagens fica mais fácil de entender:</p>
+            <pre><code>class ScaleZip(ZipProcessor):
+    def process_files(self):
+        """Scale each image in the directory to 640x480"""
+        for filename in self.temp_directory.iterdir():
+            im = Image.open(str(filename))
+            scaled = im.resize((640, 480))
+            scaled.save(filename)</code></pre>
+
+            <p>Agora podemos melhorar ou corrigir <code>ZipProcessor</code> sem necessariamente afetar as classes filhas. Esse baixo acoplamento torna o código mais manutenível.</p>
+        </div>
+    </div>
+
+    <div id="5-4-case-study">
+        <h2>Estudo de caso</h2>
+        <p>Modelaremos uma classe <code>Document</code> que pode ser usada em um processador de texto. Poderíamos representar o conteúdo como <code>str</code>, mas esse tipo de dados é imutável em Python. Sempre que inserirmos ou excluírmos um caractere, teríamos de criar outra string, o que poderia sobrecarregar o coletor de lixo do Python. Portanto, em vez de <code>str</code>, a estrutura subjacente à classe será uma lista de caracteres, que podemos modificar diretamente.</p>
+        <p>Operações que podemos implementar em nosso sistema: inserir, excluir, selecionar caracteres; recortar, copiar e colar a seleção; savar e fechar o documento.</p>
+
+        <p>Vamos começar com uma primeira versão:</p>
+        <pre><code>class Document:
+    def __init__(self):
+        self.characters = []
+        self.cursor = 0
+        self.filename = ""
+
+    def insert(self, character):
+        self.characters.insert(self.cursor, character)
+        self.cursor += 1
+
+    def delete(self):
+        del self.characters[self.cursor]
+
+    def save(self):
+        with open(self.filename, "w") as f:
+            f.write("".join(self.characters))
+
+    def forward(self):
+        self.cursor += 1
+
+    def back(self):
+        self.cursor -= 1</code></pre>
+
+        <p>Exemplo de execução:</p>
+        <pre><code>>>> doc = Document()
+>>> doc.filename = "test_document"
+>>> doc.insert('h')
+>>> doc.insert('e')
+>>> doc.insert('l')
+>>> doc.insert('l')
+>>> doc.insert('o')
+>>> "".join(doc.characters)
+'hello'
+>>> doc.back()
+>>> doc.delete()
+>>> doc.insert('p')
+>>> "".join(doc.characters)
+'hellp'</code></pre>
+
+        <p>Como a class está relativamente pequena, colocamos tudo em um lugar só. Mas e se quiséssemos suportar as operações de <i>home</i>, <i>end</i>, <i>PageUp</i>, <i>PageDown</i>, dentre outras? Poderia ser interessante descentralizar um pouco esses métodos. Vamos implementar a classe <code>Cursor</code> com essas operações relacionadas:</p>
+        <pre><code>class Cursor:
+    def __init__(self, document):
+        self.document = document
+        self.position = 0
+
+    def forward(self):
+        self.position += 1
+
+    def back(self):
+        self.position -= 1
+
+    def home(self):
+        while self.document.characters[self.position - 1].character != "\n":
+            self.position -= 1
+            if self.position == 0:  # Got to beginning of file before newline
+                break
+
+    def end(self):
+        while self.position < len(self.document.characters) and self.document.characters[self.position] != "\n":
+            self.position += 1</code></pre>
+
+        <p>Esse código não é perfeito. Por exemplo, tentar ir para <i>home</i> em um documento vazio levantaria uma exceção. Você pode implementar melhorias como validações de erros, como exercício.</p>
+
+        <p>Como ficaria a mudança na classe <code>Document</code>?</p>
+
+        <p>Uma possível execução:</p>
+        <pre><code>>>> d = Document()
+>>> d.insert('h')
+>>> d.insert('e')
+>>> d.insert('l')
+>>> d.insert('l')
+>>> d.insert('o')
+>>> d.insert('\n')
+>>> d.insert('w')
+>>> d.insert('o')
+>>> d.insert('r')
+>>> d.insert('l')
+>>> d.insert('d')
+>>> d.cursor.home()
+>>> d.insert("*")
+>>> print("".join(d.characters))
+hello
+*world</code></pre>
+
+<p>Em vez de usar o método <code>join</code> diretamente, poderíamos abstrair essa ideia para um método próprio na classe <code>Document</code>:</p>
+
+<pre><code>    @property
+    def string(self):
+        return "".join(self.characters)</code></pre>
+
+        <p>Vamos suportar agora formatação dos caracteres, como <b>negrito</b>, <i>itálico</i> ou <u>sublinhado</u>. Poderíamos fazer algo como um XML para representar a formatação dos nossos caracteres, como é usado em processadores de textos. Mas vamos simplificar, declarando uma classe <code>Character</code> com atributos representando a formatação de cada caractere.</p>
+    </div>
     <!-- exercício
 
 classe matemática que apresenta a constante pi com um determinado número de precisão como método property
@@ -384,4 +618,13 @@ propriedade idade que retorna a idade a partir da data de nascimento e data atua
 propriedade nome completo, retorna nome e sobrenome.
 
 propriedade média, depende de notas -->
+
+    <!-- exercícios
+        
+torar zipprocessor abstrata 
+
+<p>Esse código não é perfeito. Por exemplo, tentar ir para <i>home</i> em um documento vazio levantaria uma exceção. Você pode implementar melhorias como validações de erros, como exercício.</p>
+
+há diferença entre delete e backspace. implemente cada uma delas
+    -->
 </div>

@@ -2,7 +2,7 @@ from urllib.request import urlopen
 import time
  
 class WebPage:
-    def __init__(self, url, cache_timeout=20):
+    def __init__(self, url, cache_timeout=20): 
         self.url = url
         self._content = None
         self._cache_timeout = cache_timeout
@@ -28,7 +28,7 @@ class WebPage:
     
 # Exemplo de uso
 webpage = WebPage("https://g1.globo.com/")
-webpage.cache_timeout = 60
+webpage.cache_timeout = 10
 
 now = time.time()
 content1 = webpage.content
@@ -38,4 +38,4 @@ now = time.time()
 content2 = webpage.content
 print("Tempo de busca:", time.time() - now)
 
-print("Conteúdos iguais?", content2 == content1) #comparando os conteúdos e vendo se eles estão iguais ou não 
+print("Conteúdos iguais?", content2 == content1) #comparando os conteúdos e vendo se eles estão iguais ou não -> retorna true ou false
