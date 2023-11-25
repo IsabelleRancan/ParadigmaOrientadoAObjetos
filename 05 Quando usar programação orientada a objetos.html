@@ -340,36 +340,27 @@ True</code></pre>
             <ol class="ecxs">
                 <li>
                     <p><b>Adicionando Expiração ao Cache</b></p>
-
-                    <p>Modifique a classe <code>WebPage</code> para incluir um atributo de expiração no cache. Este atributo representa o período durante o qual o conteúdo da página é considerado válido. Após esse período, ao solicitar o conteúdo, a página deve ser recarregada automaticamente. Siga as etapas abaixo:</p>
-                    <ol type="a">
-                        <li>
-                            <b>Atributo de Expiração:</b>
-                            <ul>
-                                <li>Adicione um novo atributo privado chamado <code>cache_timeout` à classe `WebPage</code>. Este atributo deve representar o tempo de expiração do cache em segundos.</li>
-                                <li>Escolha um valor padrão para <code>cache_timeout</code>, mas que possa ser modificado depois através de métodos decorados @property e @setter.</li>
-                            </ul>
-                        </li>
-
-                        <li>
-                            <b>Recarregamento Automático:</b>
-                            <ul>
-                                <li>Modifique o método <code>content</code> para verificar se o cache está expirado antes de retornar o conteúdo.</li>
-                                <li>Se o cache estiver expirado, recarregue o conteúdo da página e atualize o timestamp de expiração do cache.</li>
-                                <li>Utilize o módulo <code>time</code> para gerenciar os timestamps.</li>
-                            </ul>
-                        </li>
-
-                        <li>
-                            <b>Exemplo de Uso:</b>
-                            <ul>
-                                <li>Crie uma instância da classe <code>WebPage</code> com uma URL de sua escolha.</li>
-                                <li>Configure um tempo de expiração para o cache (em segundos).</li>
-                                <li>Solicite o conteúdo da página várias vezes e observe se o conteúdo é recarregado após o período de expiração.</li>
-                            </ul>
-                        </li>
-                    </ol>
+                    <p>Considere a classe <code>WebPage</code> que utiliza uma propriedade para armazenar em cache os dados recuperados. Um problema óbvio com esse exemplo é que o cache nunca é atualizado. Introduza um tempo limite no getter da propriedade de modo que a página em cache seja retornada apenas se a solicitação for feita antes da expiração do tempo limite. Você pode usar o módulo <code>time</code> para determinar se o cache expirou: <code>time.time() - an_old_time</code> retorna o número de segundos que se passaram desde <code>an_old_time</code>. Escolha um valor padrão para o tempo limite, mas que possa ser modificado depois através de métodos decorados @property e @setter.</p>
+                    <p>Teste o módulo do exercício anterior com os seguintes passos:</p>
+                    <ul>
+                        <li>Crie uma instância da classe <code>WebPage</code> com uma URL de sua escolha.</li>
+                        <li>Configure um tempo de expiração para o cache (em segundos).</li>
+                        <li>Solicite o conteúdo da página várias vezes e observe se o conteúdo é recarregado após o período de expiração.</li>
+                    </ul>
                 </li>
+                <li>
+                    <p><b>Propriedades dinâmicas</b></p>
+                    Como a constante $\pi$ é uma dízima não periódica, não é possível determinar seu valor exato. Dependendo das necessidades de sua aplicação, é aceitável que o $\pi$ tenha um certo nível de precisão. Desenvolva uma classe <code>Math</code> que possua uma propriedade <code>pi</code>, que retorna o valor do $\pi$ com um determinado número de casas decimais. Essa classe também possui um atributo de classe <code>precision</code>, que indica o número de casas decimais que a propriedade <code>pi</code> deve gerar. Para simplificar, considere que a classe <code>Math</code> pode gerar um $\pi$ de até um valor máximo determinado de casas decimais.
+                    <p>Crie um módulo para testar a classe <code>Math</code> do exercício anterior. Neste módulo, calcule o perímetro de um círculo usando diferentes valores de precisão para $\pi$.</p>
+                </li>
+                <li>
+                    <!-- Este exercício visa praticar o uso de propriedades em Python para calcular valores dinâmicos com base em outros atributos da classe. -->
+                    <p><b>Propriedades dependentes</b></p>
+                    <p>Desenvolva uma classe <code>Pessoa</code> com os atributos <code>nome</code> e <code>data_nascimento</code>. Implemente a propriedade <code>idade</code> que devolve quantos anos a pessoa tem, com base em sua data de nascimento e na data atual.</p>
+                    <p>Crie duas instâncias da classe <code>Pessoa</code> com nomes distintos e datas de nascimento diferentes. Em seguida, exiba a idade de cada pessoa usando a propriedade <code>idade</code>.</p>
+                </li>
+
+
             </ol>
         </div>
     </div>
@@ -407,23 +398,27 @@ class ZipReplace:
             <ol><b>Baixo acoplamento:</b> Modularidade nos proporciona partes mais independentes. Um cliente poderia muito bem utilizar nossa API para buscar e substituir ocorrências em arquivos de pastas descompactadas.</ol>
         </ul>
         <p>Os métodos delegados:</p>
-        <pre><code>def unzip_files(self):
+        <pre><code>    def unzip_files(self):
         self.temp_directory.mkdir()
-        with zipfile.ZipFile(self.filename) as zip:
-            zip.extractall(self.temp_directory)
+        zip = zipfile.ZipFile(self.filename)
+        zip.extractall(self.temp_directory)
+        zip.close()
 
     def find_replace(self):
         for filename in self.temp_directory.iterdir():
-            with filename.open() as file:
-                contents = file.read()
+            file = filename.open()
+            contents = file.read()
+            file.close()
             contents = contents.replace(self.search_string, self.replace_string)
-            with filename.open("w") as file:
-                file.write(contents)
+            file = filename.open("w")
+            file.write(contents)
+            file.close()
 
     def zip_files(self):
-        with zipfile.ZipFile(self.filename, "w") as file:
-            for filename in self.temp_directory.iterdir():
-                file.write(filename, filename.name)
+        file = zipfile.ZipFile(self.filename, "w")
+        for filename in self.temp_directory.iterdir():
+            file.write(filename, filename.name)
+        file.close()
         shutil.rmtree(self.temp_directory)
 
 
@@ -469,16 +464,18 @@ class ZipProcessor:
 
     def unzip_files(self):
         self.temp_directory.mkdir()
-        with zipfile.ZipFile(self.zipname) as zip:
-            zip.extractall(self.temp_directory)
+        zip = zipfile.ZipFile(self.zipname)
+        zip.extractall(self.temp_directory)
+        zip.close()
 
     def zip_files(self):
-        with zipfile.ZipFile(self.zipname, "w") as file:
-            for filename in self.temp_directory.iterdir():
-                file.write(filename, filename.name)
+        file = zipfile.ZipFile(self.zipname, "w")
+        for filename in self.temp_directory.iterdir():
+            file.write(filename, filename.name)
+        file.close()
         shutil.rmtree(self.temp_directory)</code></pre>
 
-            <p>Observe que as mudança tornaram o código mais generalizado. Essa classe não implementa o método <code>process_files</code>, que deve ser implementado pelas classes filhas. Ou seja, é uma classe abstrata! Fica como exercício torná-la abstrata na prática.</p>
+            <p>Observe que as mudança tornaram o código mais generalizado. Essa classe não implementa o método <code>process_files</code>, que deve ser implementado pelas classes filhas. Ou seja, é uma classe abstrata! Fica como exercício torná-la abstrata.</p>
 
             <p>A nova versão de <code>ZipReplace</code> ficou mais enxuta:</p>
             <pre><code>class ZipReplace(ZipProcessor):
@@ -491,11 +488,13 @@ class ZipProcessor:
         """perform a search and replace on all files in the
         temporary directory"""
         for filename in self.temp_directory.iterdir():
-            with filename.open() as file:
-                contents = file.read()
+            file = filename.open()
+            contents = file.read()
+            file.close()
             contents = contents.replace(self.search_string, self.replace_string)
-            with filename.open("w") as file:
-                file.write(contents)</code></pre>
+            file = filename.open("w")
+            file.write(contents)
+            file.close()</code></pre>
             <p>Aqui tomamos o cuidado de comentar o método <code>process_files</code> pois agora ele não está mais tão óbvio quanto antes.</p>
 
             <p>A classe de imagens fica mais fácil de entender:</p>
@@ -508,6 +507,15 @@ class ZipProcessor:
             scaled.save(filename)</code></pre>
 
             <p>Agora podemos melhorar ou corrigir <code>ZipProcessor</code> sem necessariamente afetar as classes filhas. Esse baixo acoplamento torna o código mais manutenível.</p>
+        </div>
+        <div id="5-3-3-exercicios">
+            <h3>Exercícios</h3>
+            <ol class="excs">
+                <li>Torne <code>ZipProcessor</code> abstrata.</li>
+                <li>Modifique <code>ZipProcessor</code> de modo a descompactar recursivamente a pasta selecionada.</li>
+                <li>O método <code>process_files</code> da classe <code>ScaleZip</code> chumbou no código uma resolução fixa de 640x480, o que não é tão interessante. Proponha uma solução em que os novos valores de resolução não estejam chumbados.</li>
+                <li>Teste as classes <code>ZipReplace</code> e <code>ScaleZip</code> para casos como: substituir palavras em arquivos de texto, redimensionar imagens com várias resoluções, verificar se arquivos fora do formato de imagem não são afetados por <code>ScaleZip</code>, e confirmar que todos os arquivos são reinseridos no arquivo ZIP final após a operação.</li>
+            </ol>
         </div>
     </div>
 
@@ -531,8 +539,12 @@ class ZipProcessor:
         del self.characters[self.cursor]
 
     def save(self):
-        with open(self.filename, "w") as f:
-            f.write("".join(self.characters))
+        file = open(self.filename, "w")
+        string = ""
+        for char in self.characters:
+            string += char
+        file.write(string)
+        file.close()
 
     def forward(self):
         self.cursor += 1
@@ -548,13 +560,13 @@ class ZipProcessor:
 >>> doc.insert('l')
 >>> doc.insert('l')
 >>> doc.insert('o')
->>> "".join(doc.characters)
-'hello'
+>>> print(doc.characters)
+[h, e, l, l, o]
 >>> doc.back()
 >>> doc.delete()
 >>> doc.insert('p')
->>> "".join(doc.characters)
-'hellp'</code></pre>
+>>> print(doc.characters)
+[h, e, l, l, p]</code></pre>
 
         <p>Como a class está relativamente pequena, colocamos tudo em um lugar só. Mas e se quiséssemos suportar as operações de <i>home</i>, <i>end</i>, <i>PageUp</i>, <i>PageDown</i>, dentre outras? Poderia ser interessante descentralizar um pouco esses métodos. Vamos implementar a classe <code>Cursor</code> com essas operações relacionadas:</p>
         <pre><code>class Cursor:
@@ -569,13 +581,16 @@ class ZipProcessor:
         self.position -= 1
 
     def home(self):
-        while self.document.characters[self.position - 1].character != "\n":
+        while self.document.characters[self.position - 1] != "\n":
             self.position -= 1
             if self.position == 0:  # Got to beginning of file before newline
                 break
 
     def end(self):
-        while self.position < len(self.document.characters) and self.document.characters[self.position] != "\n":
+        while (
+            self.position &lt; len(self.document.characters)
+            and self.document.characters[self.position] != "\n"
+        ):
             self.position += 1</code></pre>
 
         <p>Esse código não é perfeito. Por exemplo, tentar ir para <i>home</i> em um documento vazio levantaria uma exceção. Você pode implementar melhorias como validações de erros, como exercício.</p>
@@ -597,34 +612,77 @@ class ZipProcessor:
 >>> d.insert('d')
 >>> d.cursor.home()
 >>> d.insert("*")
->>> print("".join(d.characters))
-hello
-*world</code></pre>
+>>> print(d.characters)
+[h, e, l, l, o,
+, *, w, o, r, l, d]</code></pre>
 
-<p>Em vez de usar o método <code>join</code> diretamente, poderíamos abstrair essa ideia para um método próprio na classe <code>Document</code>:</p>
+        <p>Em vez de imprimir a lista diretamente, poderíamos abstrair essa ideia para um método próprio na classe <code>Document</code>:</p>
 
-<pre><code>    @property
+        <pre><code>    @property
     def string(self):
-        return "".join(self.characters)</code></pre>
+        s = ""
+        for char in self.characters:
+            s += str(char)
+        return s</code></pre>
+        <p>Como esse código é repetido no método <code>save</code>, podemos modificá-lo para fazer proveito desse código.</p>
+        <p>Vamos suportar agora formatação dos caracteres, como <b>negrito</b>, <i>itálico</i> ou <u>sublinhado</u>. Poderíamos fazer algo como um XML para representar a formatação dos nossos caracteres, como é usado em processadores de textos. Ou então podemos usar uma classe com atributos representando a formatação de cada caractere.</p>
+        <p>Se a classe for possuir métodos próprios, podemos criar nossa própria classe, senão, podemos usar uma classe embutida do Python, como <code>list</code>, <code>dict</code> ou até mesmo <code>str</code> para representar um caractere. Mas aqui vamos criar nossa própria classe para representar um caractere.</p>
+        <pre><code>class Character:
+    def __init__(self, character, bold=False, italic=False, underline=False):
+        assert len(character) == 1
+        self.character = character
+        self.bold = bold
+        self.italic = italic
+        self.underline = underline
 
-        <p>Vamos suportar agora formatação dos caracteres, como <b>negrito</b>, <i>itálico</i> ou <u>sublinhado</u>. Poderíamos fazer algo como um XML para representar a formatação dos nossos caracteres, como é usado em processadores de textos. Mas vamos simplificar, declarando uma classe <code>Character</code> com atributos representando a formatação de cada caractere.</p>
+    def __str__(self):
+        bold = "*" if self.bold else ""
+        italic = "/" if self.italic else ""
+        underline = "_" if self.underline else ""
+        return bold + italic + underline + self.character</code></pre>
+        <p>Aqui sobrecarregamos o método <code>__str__</code> que diz ao Python como representar o objeto como string. Esse método é chamado automaticamente pelo Python ao tentar imprimir seu objeto.</p>
+        <p>Como agora os caracteres são objetos da classe <code>Character</code>, devemos atualizar os métodos das classes que antes utilizavam <code>str</code> no lugar de <code>Character</code>. Isso inclui os métodos <code>insert</code> e <code>string</code> de <code>Document</code>, e <code>home</code> e <code>end</code> de <code>Cursor</code> para manipular um <code>Character</code> em vez de <code>str</code> (Deixado como tarefa).</p>
+        <p>A seguir, um exemplo de utilização:</p>
+        <pre><code>>>> d = Document()
+>>> d.insert('h')
+>>> d.insert('e')
+>>> d.insert(Character('l', bold=True))
+>>> d.insert(Character('l', bold=True))
+>>> d.insert('o')
+>>> d.insert('\n')
+>>> d.insert(Character('w', italic=True))
+>>> d.insert(Character('o', italic=True))
+>>> d.insert(Character('r', underline=True))
+>>> d.insert('l')
+>>> d.insert('d')
+>>> print(d.string)
+he*l*lo
+/w/o_rld
+>>> d.cursor.home()
+>>> d.delete()
+>>> d.insert('W')
+>>> print(d.string)
+he*l*lo
+W/o_rld
+>>> d.characters[0].underline = True
+>>> print(d.string)
+_he*l*lo
+W/o_rld</code></pre>
+        <p>O próximo passo poderia ser integrar essa API a uma interface gráfica, conectada a um teclado para entrada e a uma tela para saída. Naturalmente, gostaríamos de exibir fontes verdadeiramente em negrito, itálico e sublinhado em uma interface do usuário, em vez de usar nosso método <code>__str__</code>, mas isso foi suficiente para nossos testes básicos.</p>
     </div>
     <!-- exercício
-
-classe matemática que apresenta a constante pi com um determinado número de precisão como método property
-
-propriedade idade que retorna a idade a partir da data de nascimento e data atual
-
 propriedade nome completo, retorna nome e sobrenome.
 
-propriedade média, depende de notas -->
+propriedade média, depende de notas
+-->
 
     <!-- exercícios
-        
-torar zipprocessor abstrata 
+estudo de caso
 
 <p>Esse código não é perfeito. Por exemplo, tentar ir para <i>home</i> em um documento vazio levantaria uma exceção. Você pode implementar melhorias como validações de erros, como exercício.</p>
 
 há diferença entre delete e backspace. implemente cada uma delas
-    -->
+
+Como agora os caracteres são objetos da classe <code>Character</code>, devemos atualizar os métodos das classes que antes utilizavam <code>str</code> no lugar de <code>Character</code>. Isso inclui os métodos <code>insert</code> e <code>string</code> de <code>Document</code>, e <code>home</code> e <code>end</code> de <code>Cursor</code> para manipular um <code>Character</code> em vez de <code>str</code> (Deixado como tarefa
+     -->
 </div>
