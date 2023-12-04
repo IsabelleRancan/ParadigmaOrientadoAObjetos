@@ -19,3 +19,5 @@ minha_classe_math = Math()
 # Acessando o método pi, formatando e imprimindo o valor
 valor_formatado = minha_classe_math.pi
 print("Valor de pi formatado:", valor_formatado)
+teste = Math.precision(5)
+print(teste)
