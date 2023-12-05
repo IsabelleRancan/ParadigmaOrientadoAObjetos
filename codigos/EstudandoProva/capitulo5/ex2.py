@@ -11,7 +11,7 @@ class Math:
     def pi(self):
         """Criando a propriedade de classe pi.
         Essa classe vai retornar o valor de pi com o número determinado de casas decimais."""
-        return round(math.pi, self.precision)
+        return round(math.pi, self.precision) #passando o numero que eu quero, especificando o meu parametro de decimais 
 
 # # Criando uma instância da classe Math
 # minha_classe_math = Math()
