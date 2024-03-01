@@ -1,7 +1,8 @@
 #Criando um catálogo de diferentes formas 
 # -> IMPORTAÇÕES: 
 #Tuplas nomeadas: from collections import namedtuple
- 
+#@dataclass: from dataclasses import dataclass
+#make_dataclass: from dataclasses import make_dataclass
 
 #Tuplas 
 
