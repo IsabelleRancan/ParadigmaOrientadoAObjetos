@@ -13,7 +13,6 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-    <script src="pseudocode.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
     <script defer>hljs.configure({ cssSelector: "code", languages: ["python"] }); hljs.highlightAll(); hljs.initLineNumbersOnLoad();</script>
 
@@ -68,25 +67,25 @@
             text-align: left;
         }
 
+        /* inicia a lista de exercícios */
         ol.excs {
-            /* lista de exercícios */
             padding-inline-start: 0em;
             counter-reset: excs;
             list-style: none;
         }
 
-        ol.excs>li::before {
-            /* lista de exercícios */
+        /* põe um numerador num item da lista de exercícios, desde que não seja da classe no-mark */
+        ol.excs>li:not(.no-mark)::before {
             counter-increment: excs;
             content: counters(excs, ".") ". ";
         }
 
+        /* põe uma barra vertical ao lado do item da lista de exercícios */
         ol.excs>li {
             /* Change this to adjust the line color and thickness */
             border-left: 2px solid #000;
             /* Optional: Add padding to create some space between the bar and content */
             padding-left: 10px;
-
             margin-block-start: 1em;
             margin-block-end: 1em;
         }
@@ -167,6 +166,25 @@ print(f"Stock with the highest percentage change: {result[0]}")
 print(f"Average value of the share with the highest percentage change: {result[1]}")</code></pre>
 
         <p>Nas linhas 3, 7 e 8 fizemos <b>desempacotamento</b> (unpacking), ou <b>destruturação</b> (destructuring) da tupla, um recurso que lhe permite atribuir valores de objetos iteráveis (como tupla e lista) a múltiplas variáveis em uma única linha. Por convenção, quando destruturamos um valor que não precisamos, usamos o <code>_</code>, como nas linhas 7 e 8.</p>
+        <p>Se você quiser inicializar várias variáveis em uma única linha, pode usar desempacotamento de tuplas:</p>
+        <pre><code># jeito pythônico de ser
+a, b, c = 10, 20, 30
+
+# em outras linguagens vc faria algo assim:
+# a=10, b=20, c=30</code></pre>
+        <p>Uma tupla pode ser imutável, mas os itens dentro dela não necessariamente:</p>
+        <pre><code>tuple1 = (11, [22, 33], 44, 55)
+print("original:", tuple1)
+
+tuple1[1][0] = 222 # a lista dentro da tupla pode ser modificada
+print("modificada:", tuple1)</code></pre>
+
+        <p>Você também pode ter uma tupla com um único item. Neste caso, para diferenciar de um valor isolado, deve haver uma vírgula após o item:</p>
+        <pre><code>a_tuple = (42,)
+not_a_tuple = (42)
+a_int = 42
+print(a_tuple, not_a_tuple, a_int)
+print(type(a_tuple), type(not_a_tuple), type(a_int))</code></pre>
         <p>Ainda, percebemos que tuplas podem carecer de legibilidade, pois os dados dentro dela não são nomeados.</p>
 
         <div id="6-2-1-named-tuples">
@@ -245,6 +263,7 @@ print(movie2)
 print(movie1 &lt; movie2)
 print(movie1.better_than(movie2))</code></pre>
 
+            <p>Tipagem em Python <a href="https://peps.python.org/pep-0484/#non-goals">não são forçadas</a> em tempo de execução e não são necessárias para a execução correta do código. No entanto, elas podem ser usadas por ferramentas de terceiros, como verificadores de tipo (type checkers), IDEs, linters, etc., e podem ser usadas para verificação de tipo durante o desenvolvimento.</p>
             <p>É possível atribuir valores padrões aos atributos e, com o argumento <code>order=True</code>, torna-se possível realizar não apenas verificações de igualdade, mas também comparações como menor ou maior. A comparação, por padrão, é feita por atributo, seguindo a ordem em que foram declarados, até que atributos com valores distintos sejam encontrados. Você pode alterar o modo de comparação, bem como utilizar vários outros recursos oferecidos pela classe <code>dataclass</code>. Para mais informações, <a href="https://realpython.com/python-data-classes/#more-flexible-data-classes">acesse aqui</a>.</p>
         </div>
     </div>
@@ -472,10 +491,200 @@ COM SEGUNDO TURNO</pre>
                     </table>
                 </li>
                 <!-- Faltou um exercício que seja interessante usar a classe counter... -->
-                <!-- exercício pra converter de tupla pra dataclass ou alguma coisa assim -->
+            </ol>
+        </div>
+    </div>
+    <div id="6-5-lists">
+        <h2>Listas</h2>
+        <p>Listas são classes de objetos em Python que suportam sintaxes personalizadas que encapsulam seu uso, sem a necessidade de chamar métodos explicitamentes, como a capacidade de instanciar objetos sem explicitamente chamar construtores, ou realizar muitas outras operações como <i>list comprehension</i> ou <i>slice notation</i>.</p>
+        <p>Listas geralmente são usadas para armazenar vários objetos do mesmo tipo; listas de strings, listas de números, ou listas de objetos próprios.</p>
+        <p>Apesar de possível, evite armazenar elementos de tipos diferentes em uma mesma lista. Por exemplo, para armazenar pares de letra/ocorrências, poderíamos ter <code>['a', 1, 'b', 3]</code>, que significa que a letra 'a' ocorreu 1 vez e a letra 'b' ocorreu 3 vezes. Mas pensa na hora de iterar por essa lista como seria mais complicado. Uma solução melhor, mas não necessariamente a melhor de todas, seria <code>[('a',1), ('b',3)]</code>.</p>
+        <p>Dentre os métodos mais utilizados de listas, se encontram:</p>
+        <ul>
+            <li><code>append(element)</code>: Adiciona <code>element</code> no final da lista.</li>
+            <li><code>insert(i, element)</code>: Adiciona <code>element</code> numa posição específica da lista.</li>
+            <li><code>count(element)</code>: Conta quantas vezes <code>element</code> aparece na lista.</li>
+            <li><code>index(element)</code>: Retorna o índice onde <code>element</code> se encontra na lista, ou levanta uma exceção caso não se encontre na lista.</li>
+            <li><code>find(element)</code>: Que nem <code>index(element)</code>, mas retorna -1 em vez de levantar exceção.</li>
+            <li><code>reverse()</code>: Inverte a lista <i>in-loco</i> (a modifica). Para retornar um iterador que percorre uma lista <code>l</code> de trás para frente, use a função <code>reversed(l)</code>.</li>
+            <li><code>sort()</code>: Ordena a lista <i>in-loco</i> (a modifica). Para retornar uma cópia ordenada da lista <code>l</code>, use a função <code>sorted(l)</code>.</li>
+        </ul>
+        <div id="6-5-1-sorting-lists">
+            <h3>Ordenando listas</h3>
+            <p>O método <code>sort</code> chama o método mágico <code>__lt__</code> (abreviação de “menor que”) para comparar os elementos da lista. A maioria das classes padrão do Python já vêm com <code>__lt__</code> implementado. Se tentar ordenar objetos que não possuam <code>__lt__</code>, uma exceção é levantada.</p>
+            <pre><code>class WeirdSortee:
+    def __init__(self, string, number):
+        self.string = string
+        self.number = number
+
+    def __lt__(self, other):
+        return self.number < other.number
+
+    def __repr__(self):
+        return f"{self.string}:{self.number}"</code></pre>
+
+            <p>O método mágico <code>__lt__</code> deve retornar <code>True</code> caso <code>self</code> seja menor que <code>other</code>, ou <code>False</code> caso contrário. Esse método é chamado automaticamente pelo método <code>sort</code>. Já o método mágico <code>__repr__</code> deve retornar uma representação em string do objeto, e é chamado automaticamente pela função <code>print</code>. Veja uma ilustração de uso dessa classe:</p>
+            <pre><code>>>> a = WeirdSortee("a", 4)
+>>> b = WeirdSortee("B", 3)
+>>> c = WeirdSortee("c", 2)
+>>> d = WeirdSortee("d", 1)
+>>> l = [a, b, c, d]
+>>> print(l)
+[a:4, b:3, c:2, d:1]
+>>> l.sort()
+>>> print(l)
+[d:1, c:2, b:3, a:4]</code></pre>
+
+            <p>E se quisermos ordenar nossa lista de objetos de um modo diferente ao definido pelo <code>__lt__</code>? Também podemos passar uma função como argumento ao parâmetro <code>key</code> do método <code>sort</code>, que deve retornar o valor a ser comparado de cada objeto da lista. Seguindo a ilustração anterior, agora ordenando por outro atributo:</p>
+            <pre><code>>>> a = WeirdSortee("a", 4)
+>>> b = WeirdSortee("B", 3)
+>>> c = WeirdSortee("c", 2)
+>>> d = WeirdSortee("d", 1)
+>>> l = [a, b, c, d]
+>>> print(l)
+[a:4, B:3, c:2, d:1]
+>>> l.sort()
+>>> print(l)
+[d:1, c:2, B:3, a:4]
+>>>
+>>> def custom_order(obj):
+...     return obj.string.lower()
+...
+>>> l.sort(key=custom_order)
+>>>
+>>> print(l)
+[a:4, B:3, c:2, d:1]</code></pre>
+            <p>Observe que a função <code>custom_order</code> retorna o valor em minúsculo do atributo <code>string</code>, para normalizar a ordenação de letras maiúsculas e minúsculas, senão, as letras maiúsculas são ordenadas à frente das letras minúsculas.</p>
+
+            <p>Podemos usar muitas das funções integradas do Python para personalizar a ordenação de objetos:</p>
+            <pre><code>>>> l = ["hello", "HELP", "Helo"]
+>>> l
+['hello', 'HELP', 'Helo']
+>>> l.sort()
+>>> l
+['HELP', 'Helo', 'hello']
+>>> l.sort(key=str.lower)
+>>> l
+['hello', 'Helo', 'HELP']</code></pre>
+            <p>A função <code>lower</code> da classe <code>str</code> retorna a versão minúscula da string passada como argumento.</p>
+
+            <p>Por padrão, tuplas são ordenadas pelo valor de seus primeiros itens, mas podemos modificar esse comportamento através da função incorporada <code>operator.itemgetter</code>:</p>
+            <pre><code>>>> from operator import itemgetter
+>>> 
+>>> l = [('n', 6), ('o', 5), ('h', 4), ('t', 3), ('y', 2), ('p', 1)]
+>>> l
+[('n', 6), ('o', 5), ('h', 4), ('t', 3), ('y', 2), ('p', 1)]
+>>>
+>>> l.sort()
+>>> l
+[('h', 4), ('n', 6), ('o', 5), ('p', 1), ('t', 3), ('y', 2)]
+>>>
+>>> l.sort(key=itemgetter(1))
+>>> l
+[('p', 1), ('y', 2), ('t', 3), ('h', 4), ('o', 5), ('n', 6)]</code></pre>
+            <p>A função <code>operator.itemgetter(i)</code> retorna uma função que retorna o i-ésimo elemento de um objeto iterável, como uma tupla, lista ou dicionário. Similarmente, para retornar um atributo específico de um objeto, você pode usar a função <code>operator.attrgetter</code>. Mais detalhes na <a href="https://docs.python.org/3/library/operator.html#operator.attrgetter">documentação oficial</a>.</p>
+        </div>
+    </div>
+    <div id="6-6-sets">
+        <h2>Conjuntos</h2>
+        <p>A classe de objetos <code>set</code> lembra conjuntos da matemática, e é usada para armazenar elementos únicos (sem duplicatas). Similarmente aos dicionários, conjuntos em python usam tabela hash como estrutura de dados subjacente, que não mantém uma ordenação dos elementos, mas consegue buscar rapidamente por eles dentro do conjunto.</p>
+        <p>Como exemplo de uso, suponha que você tenha uma coleção de músicas, de vários artistas, e quer uma lista com todos os artistas. Como um artista pode ter várias músicas, você precisa de um meio de filtrar o resultado, para ele não aparecer várias vezes.</p>
+        <pre><code>song_library = [
+("Phantom Of The Opera", "Sarah Brightman"),
+("Knocking On Heaven's Door", "Guns N' Roses"),
+("Captain Nemo", "Sarah Brightman"),
+("Patterns In The Ivy", "Opeth"),
+("November Rain", "Guns N' Roses"),
+("Beautiful", "Sarah Brightman"),
+("Mal's Song", "Vixy and Tony"),
+]
+
+artists = set()
+for song, artist in song_library:
+    artists.add(artist)
+
+print(artists)
+
+if "Opeth" in artists:
+    print("Opeth in artists")
+
+for artist in artists:
+    print(artist, "plays good music")</code></pre>
+        <p>Observe que os elementos não são impressos na ordem em que foram colocados. Você pode usar o operador <code>in</code> para consultar e percorrer elementos do conjunto. Mas não pode usar índices para acessar elementos específicos. E para ordená-los, precisa converter para uma lista antes.</p>
+        <p>Diferentemente de listas, dicionários e tuplas, que possuem sintaxes específicas para inicializar seus objetos vazios, com conjuntos, você precisa chamar explicitamente o construtor. Mas para inicializar um conjuto com elementos iniciais, a sintaxe fica parecida com dicionários, exceto que não vai o dois-pontos. Você também pode passar qualquer objeto iterável como argumento no construtor de conjuntos:</p>
+        <pre><code>>>> x = {'foo', 'bar', 'baz', 'foo', 'qux'}
+>>> x
+{'qux', 'foo', 'bar', 'baz'}
+>>> x = set(['foo', 'bar', 'baz', 'foo', 'qux'])
+>>> x
+{'qux', 'foo', 'bar', 'baz'}
+>>> x = set(('foo', 'bar', 'baz', 'foo', 'qux'))
+>>> x
+{'qux', 'foo', 'bar', 'baz'}
+>>> x = set('quux')
+>>> x
+{'x', 'u', 'q'}</code></pre>
+        <p>Como conjuntos da matemática, <code>set</code>s suportam operaçoes de união, intersecção e diferença simétrica, dentre outros.</p>
+        <pre><code>my_collection = {
+"Sarah Brightman",
+"Guns N' Roses",
+"Opeth",
+"Vixy and Tony",
+}
+
+your_collection = {"Nickelback", "Guns N' Roses", "Savage Garden"}
+
+print("All:", my_collection.union(your_collection))
+print("Both:", your_collection.intersection(my_collection))
+print("Either but not both:", my_collection.symmetric_difference(your_collection))</code></pre>
+        <p><code>set</code>s também suportam operações de conjuntos contém, contido e diferença:</p>
+        <pre><code>mine = {"Sarah Brightman", "Guns N' Roses", "Opeth", "Vixy and Tony"}
+
+yours = {"Guns N' Roses", "Opeth"}
+
+print("first_artists is to bands:")
+print("issuperset:", mine.issuperset(yours))
+print("issubset:", mine.issubset(yours))
+print("difference:", mine.difference(yours))
+
+print("*" * 20)
+
+print("bands is to first_artists:")
+print("issuperset:", yours.issuperset(mine))
+print("issubset:", yours.issubset(mine))
+print("difference:", yours.difference(mine))</code></pre>
+
+        <p>Os métodos <code>union</code>, <code>intersection</code> e <code>difference</code> aceitam múltiplos argumentos.</p>
+        
+        <p>Como os métodos sugerem, <code>set</code>s são bons para situações em que você tem que comparar dados de fontes diferentes. Por exemplo, combiná-los, determinar quais se sobrepõem ou não (elementos contidos em ambos os conjuntos), ou remover duplicatas. Tudo isso garantindo um ótimo desempenho que não seria possível usando listas. Por exemplo, apesar do operador <code>in</code> estar disponíel tanto para conjuntos quanto para listas, ele é muito mais eficiente em conjuntos do que em listas: Em listas, é necessário percorrer a lista até encontrar pelo objeto procurado, se houver; Em conjuntos, não importa o tamanho deles, devido à tabela hash, a busca demora um fator constante de tempo.</p>
+
+        <div id="6-6-1-exercises">
+            <h3>Exercícios</h3>
+            <ol class="excs">
+                <li class="no-mark">Para os seguintes exercícios, escolher estruturas de dados que melhor atendam ao critério de desempenho.</li>
+                <li>Ler uma sequência de números, que se encerra com um número repetido. Escrever os números ordenadamente.</li>
+                <li>Ler um número $n$, seguido por uma sequência de $n$ números. Escrever os números, sem duplicatas, ordenadamente.</li>
+                <li>Ler duas frases, uma em cada linha. Escrever em uma linha as palavras da primeira frase que não ocorrem na segunda frase. Escrever em outra linha as palavras da primeira frase que oorrem na segunda frase.</li>
+                <li>Ler dois arquivos de texto diferentes. Escrever as palavras presentes em ambos os arquivos, sem duplicatas.</li>
+                <li>Ler dois arquivos de texto diferentes. Escrever as palavras presentes em pelo menos um dos arquivos, sem duplicatas.</li>
+                <li>Um pangrama é uma frase em que são usadas todas as letras do alfabeto de determinada língua. Exemplo de pangrama em inglês: The quick brown fox jumps over the lazy dog. Exemplo de pangrama em português, desconsiderando as letras de origem saxônica: Blitz prende ex-vesgo com cheque fajuto.
+                    <p>Ler um número $n$, seguido por $n$ frases, uma em cada linha. Para cada frase, escrever "S" ou "N" caso seja pangrama inglês ou não (desconsidera acentos).</p>
+                </li>
+                <li>Um heterograma é uma palavra ou frase em que nenhuma letra do alfabeto ocorre mais de uma vez.
+                    <p>Ler um número $n$, seguido por $n$ frases, uma em cada linha. Para cada frase, escrever "S" ou "N" caso seja heterograma ou não.</p>
+                </li>
+                <li>Um anagrama é uma palavra ou frase formada reorganizando as letras de outra palavra ou frase, usando todas as letras originais exatamente uma vez. Em outras palavras, as palavras ou frases são anagramas se tiverem as mesmas letras, mas em ordens diferentes. Exemplos de anagramas: "amor" e "roma"; "listen" e "silent"; "ator" e "rota".
+                    <p>Ler um número $n$ seguido por $n$ pares de palavras, e, para cada par, escrever "S" ou "N" caso sejam anagramas ou não.</p>
+                </li>
+                <li><b>Lista proibida</b>. Ler um número $n$, seguido por $n$ palavras "proibidas". Depois, ler um número $m$, seguido por $m$ frases, uma em cada linha. Para cada frase, escrever "PERMITIDO" ou "CENSURADO" caso haja palavras proibidas ou não. </li>
+                <li><b>Lista permitida</b>. Ler um número $n$, seguido por $n$ palavras "permitidas". Depois, ler um número $m$, seguido por $m$ frases, uma em cada linha. Para cada frase, escrever "PERMITIDO" ou "CENSURADO" caso contenha apenas palavras permitidas ou não.</li>
             </ol>
         </div>
     </div>
 </div>
-
+<!-- exercício: Como os métodos sugerem, <code>set</code>s são bons para situações em que você tem que comparar dados de fontes diferentes. Por exemplo, combiná-los, determinar quais se sobrepõem ou não (elementos contidos em ambos os conjuntos), ou remover duplicatas -->
+<!-- we have data incoming that may contain duplicates of data that has already been processed, we can use
+sets to compare the two and process only the new data. -->
+<!-- exercício que verifica se uma frase contém todas as vogais, independentemente de maiúsculo ou minúsculo -->
+<!-- aqui tem bastante exercícios interessantes de sets: https://www.geeksforgeeks.org/python-set-exercise/ -->
 <!-- Another way to create the same list is pairs = [(v, k) for (k, v) in d.items()]. -->
