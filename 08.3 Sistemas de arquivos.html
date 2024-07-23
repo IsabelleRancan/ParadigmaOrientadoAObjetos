@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+
+<head>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+        }, false);
+    </script>
+
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
+    <script defer>hljs.configure({ cssSelector: "code", languages: ["python"] }); hljs.highlightAll(); hljs.initLineNumbersOnLoad();</script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous" onload="renderMathInElement(document.body,{delimiters:[{left: '$$', right: '$$', display: true},{left: '$', right: '$', display: false}]});"></script>
+
+    <style>
+        img {
+            max-width: 90vw;
+            max-height: 90vh;
+        }
+
+        .center {
+            text-align: center;
+        }
+
+        .katex {
+            /* o padrão é 1.21, vc pode remover essa configuração se quiser deixar o padrão */
+            font-size: 1.0em;
+        }
+
+        table.custom,
+        table.custom>thead>tr>th,
+        table.custom>tbody>tr>td,
+        table.custom>tbody>tr>th {
+            /* tabela centralizada e com bordas */
+            border: 1px solid black;
+            border-collapse: collapse;
+            margin-left: auto;
+            margin-right: auto;
+            padding-left: 5px;
+            padding-right: 5px;
+            text-align: center;
+        }
+
+        table pre {
+            /* tags pre dentro de tabelas são alinhadas à esquerda, sem margem interna */
+            margin: 0;
+            text-align: left !important;
+        }
+
+        td:has(pre) {
+            /* tags pre dentro de tabela são alinhadas no topo */
+            vertical-align: top;
+        }
+
+        code:not(pre code) {
+            /* tags code não filhas de pre */
+            padding-top: 0px !important;
+            padding-bottom: 0px !important;
+        }
+
+        table.align-left th,
+        table.align-left td {
+            /* alinha à esquerda as células da tabela */
+            text-align: left !important;
+        }
+
+        /* inicia a lista de exercícios */
+        ol.excs {
+            padding-inline-start: 0em;
+            counter-reset: excs;
+            list-style: none;
+        }
+
+        /* põe um numerador num item da lista de exercícios, desde que não seja da classe no-mark */
+        ol.excs>li:not(.no-mark)::before {
+            counter-increment: excs;
+            content: counters(excs, ".") ". ";
+        }
+
+        /* põe uma barra vertical ao lado do item da lista de exercícios */
+        ol.excs>li {
+            /* Change this to adjust the line color and thickness */
+            border-left: 2px solid #000;
+            /* Optional: Add padding to create some space between the bar and content */
+            padding-left: 10px;
+            margin-block-start: 1em;
+            margin-block-end: 1em;
+        }
+
+        ol.section {
+            counter-reset: section;
+            list-style-type: none;
+        }
+
+        ol.section li::before {
+            counter-increment: section;
+            content: counters(section, ".") ". ";
+        }
+
+        td.hljs-ln-numbers {
+            /* estilizar as linhas de código da extensao highlightjs-line-numbers */
+            color: #ccc;
+            border-right: 1px solid #999;
+            padding-right: 5px;
+        }
+
+        td.hljs-ln-code {
+            /* estilizar as linhas de código da extensao highlightjs-line-numbers */
+            padding-left: 10px;
+        }
+
+        .info {
+            border-left: 6px solid blue;
+            padding-left: 1%;
+        }
+    </style>
+</head>
+
+<div id="8-strings-and-serialization">
+    <h1>8 Strings e serialização</h1>
+    <div id="filesystem-paths">
+        <h2>8.3 Caminhos de sistema de arquivos</h2>
+        <p>Um <b>sistema de arquivos</b> é uma maneira de mapear os bits e bytes armazenados no disco para a abstração lógica de arquivos e pastas (ou diretórios). Um <b>caminho</b> é a localização de um arquivo ou diretório dentro da estrutura hierárquica do sistema de arquivos. Um <b>caminho absoluto</b> contém todos os diretórios desde o diretório raiz que levam a um arquivo ou diretório específico. Um <b>caminho relativo</b> começa a partir do diretório atual (ou de outro diretório de referência), geralmente o diretório onde o aplicativo foi executado. Um <b>separador</b> é um caractere utilizado para separar diretórios e arquivos no caminho. No Windows, o separador é a barra invertida, enquanto que em sistemas Unix, é a barra. A pasta atual é representada por um ponto <code>.</code>, e a pasta pai, por dois pontos <code>..</code>.</p>
+        <p>Programas manipulam o sistema de arquivos por meio de uma interface fornecida pelo sistema operacional. O Python fornece módulos como <code>pathlib</code>, <code>shutil</code> e <code>os</code> para comunicar com o sistema de arquivos, independentemente da interface implementada pelos diferentes sistemas operacionais.</p>
+
+        <p id="estrutura-exemplo">Para explorar o sistema de arquivos com Python, considere que exista a seguinte estrutura de pastas e arquivos, dentro da pasta do usuário, conhecida como pasta <i>home</i>:</p>
+        <pre>tmp/
+├─ pasta1/
+|  └─ arquivo1.1.txt
+├─ pasta2/
+|  ├─ pasta2.1/
+|  |  ├─ pasta2.1.1/
+|  |  |  ├─ arquivo2.1.1.1.txt
+|  |  |  └─ arquivo2.1.1.2.txt
+|  |  └─ arquivo2.1.1.txt
+|  ├─ arquivo2.1.txt
+|  └─ arquivo2.2.txt
+├─ arquivo0.1.txt
+└─ arquivo0.2.txt</pre>
+        <p>Apenas para ilustrar, considere que o conteúdo de cada arquivo seja o seu nome.</p>
+
+        <div id="8-3-1-purepath">
+            <h3>Objetos <code>PurePath</code></h3>
+            <p>Um objeto <code>PurePath</code>, do módulo <code>pathlib</code>, representa um caminho, seja para um arquivo ou diretório, existente ou inexistente. Objetos <code>PurePath</code> são simplesmente strings encapsuladas. Suas operações apenas manipulam strings, mas não acessam o sistema de arquivos.</p>
+
+            <h4>
+                <pre>Path(*segments)</pre>
+            </h4>
+            <p>Construtor de um <code>Path</code>. Cada item de <code>*segments</code> pode ser uma string ou um objeto <code>Path</code>, que compõe um segmento do caminho.</p>
+            <pre><code>from pathlib import Path
+
+pasta_pai = Path("foo")
+pasta_interna = Path("bar", "baz")
+arquivo = Path(pasta_pai, pasta_interna, "algum/caminho", "setup.py")
+print(arquivo) # foo\bar\baz\algum\caminho\setup.py</code></pre>
+
+            <p>Você pode usar a barra comum como separador em uma string com vários segmentos, mesmo que esteja no Windows. Mas não use a barra invertida, mesmo no Windows. Ao imprimir um <code>Path</code>, o separador utilizado reflete o sistema operacional em uso, que no exemplo anterior, foi Windows.</p>
+            <p>Se <code>*segment</code> for vazio, a pasta atual é assumida, representada por um <code>.</code>.</p>
+            <table class="custom">
+                <thead>
+                    <tr>
+                        <th>Sistema Windows</th>
+                        <th>Sistema Linux</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <pre>>>> Path()
+WindowsPath('.')</pre>
+                        </td>
+                        <td>
+                            <pre>>>> Path()
+PosixPath('.')</pre>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <p>Ao instanciar um objeto <code>Path</code>, na verdade, o Python identifica seu sistema operacional e instancia o respectivo objeto que herda de <code>Path</code>, seja <code>WindowsPath</code> ou <code>PosixPath</code>.</p>
+
+            <p>Se um segmento for um caminho absoluto, todos os segmentos anteriores são ignorados.</p>
+            <table class="custom">
+                <thead>
+                    <tr>
+                        <th>Sistema Windows</th>
+                        <th>Sistema Linux</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <pre>>>> PureWindowsPath('c:/Windows', 'd:bar')
+PureWindowsPath('d:bar')</pre>
+                        </td>
+                        <td>
+                            <pre>>>> PurePath('/etc', '/usr', 'lib64')
+PurePosixPath('/usr/lib64')</pre>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>Barras excedentes e pontos individuais (<code>.</code>) desnecessários são descartados, mas pontos duplos (<code>..</code>) e barras duplas iniciais não são, pois isso mudaria o significado de um caminho por vários motivos (por exemplo, links simbólicos, caminhos UNC):</p>
+            <pre><code class="python-repl">>>> Path('foo//bar')
+PosixPath('foo/bar')
+>>> Path('//foo/bar')
+PosixPath('//foo/bar')
+>>> Path('foo/./bar')
+PosixPath('foo/bar')
+>>> Path('foo/../bar')
+PosixPath('foo/../bar')</code></pre>
+            <p>(uma abordagem ingênua tornaria <code>Path('foo/../bar')</code> equivalente a <code>PosixPath('bar')</code>, o que seria errado caso <code>foo</code> fosse um link simbólico para outra pasta).</p>
+
+            <h4>
+                <pre>/</pre>
+            </h4>
+            <p>O operador <code>/</code>, quando um dos operandos é <code>Path</code>, atua como um "construtor" de <code>Path</code>, como se fosse uma concatenação em strings.</p>
+            <pre><code class="python repl">>>> p = Path('/etc')
+>>> p
+PosixPath('/etc')
+>>> p / 'init.d' / 'apache2'
+PosixPath('/etc/init.d/apache2')
+>>> q = Path('bin')
+>>> '/usr' / q
+PosixPath('/usr/bin')
+>>> p / '/an_absolute_path'
+PosixPath('/an_absolute_path')</code></pre>
+
+            <h4>
+                <pre>Path.parts</pre>
+            </h4>
+            <p>Tupla contendo cada um dos segmentos do caminho.</p>
+            <pre><code class="python-repl">>>> p = Path('/usr/bin/python3')
+>>> p.parts
+('/', 'usr', 'bin', 'python3')</code></pre>
+
+            <h4>
+                <pre>Path.parents</pre>
+            </h4>
+            <p>Sequência imutável de cada um dos caminhos ancestrais.</p>
+            <pre><code class="python-repl">>>> p = Path("/bisavo/avo/pai/filho.py")
+>>> p.parents[0], p.parents[1], p.parents[2], p.parents[3]
+(PosixPath('/bisavo/avo/pai'), PosixPath('/bisavo/avo'), PosixPath('/bisavo'), PosixPath('/'))</code></pre>
+
+            <h4>
+                <pre>Path.parent</pre>
+            </h4>
+            <p>Equivalente a <code>Parent.parents[0]</code>.</p>
+            <pre><code class="python-repl">>>> p = Path('/a/b/c/d')
+>>> p.parent, p.parents[0]
+(PosixPath('/a/b/c'), PosixPath('/a/b/c'))</code></pre>
+
+            <p>Como os métodos de <code>PurePath</code> apenas manipulam strings, mas não acessam o sistema de arquivos, eles podem levar a comportamentos como esse:</p>
+            <pre><code class="python-repl">>>> p = Path('foo/..')
+>>> p.parent
+PosixPath('foo')</code></pre>
+            <p>Para de fato caminhar pelo sistema de arquivos, use métodos apropriados, como <code>Path.resolve()</code>, que veremos adiante.</p>
+
+            <h4>
+                <pre>Path.name</pre>
+            </h4>
+            <p>O último segmento do caminho, isto é, o nome do arquivo ou pasta.</p>
+            <pre><code class="python-repl">>>> Path('my/library/setup.py').name
+'setup.py'</code></pre>
+
+            <h4>
+                <pre>Path.suffix</pre>
+            </h4>
+            <p>A extensão do arquivo, se houver.</p>
+            <pre><code class="python-repl">>>> Path('my/library/setup.py').name
+'setup.py'
+>>> Path('my/library/setup.py').suffix
+'.py'
+>>> Path('my/library.tar.gz').suffix
+'.gz'
+>>> Path('my/library').suffix
+''</code></pre>
+
+            <h4>
+                <pre>Path.suffixes</pre>
+            </h4>
+            <p>Uma lista com as extensões do arquivo.</p>
+            <pre><code class="python-repl">>>> Path('my/library.tar.gar').suffixes
+['.tar', '.gar']
+>>> Path('my/library.tar.gz').suffixes
+['.tar', '.gz']
+>>> Path('my/library').suffixes
+[]</code></pre>
+
+            <h4>
+                <pre>Path.stem</pre>
+            </h4>
+            <p>O último segmento do caminho, conhecido como radical, sem a extensão.</p>
+            <pre><code class="python-repl">>>> Path('my/library/setup.py').stem
+'setup'
+>>> Path('my/library.tar.gz').stem
+'library.tar'
+>>> Path('my/library').stem
+'library'</code></pre>
+
+            <!-- <h4>
+                <pre>Path.match(pattern, *, case_sensitive=None)</pre>
+            </h4>
+            <p>Procura <code>pattern</code> no caminho, sendo <code>pattern</code> um padrão <i>glob</i>, e não regex.</p> -->
+
+            <h4>
+                <pre>Path.with_name(name)</pre>
+            </h4>
+            <p>Retorna um novo caminho com o nome alterado. Se o caminho original não tiver nome, <code>ValueError</code> é lançado:</p>
+            <pre><code class="python-repl">>>> p = Path('c:/Downloads/pathlib.tar.gz')
+>>> p.with_name('setup.py')
+WindowsPath('c:/Downloads/setup.py')
+>>> p = Path('c:/')            
+>>> p.with_name('setup.py')
+ValueError: WindowsPath('c:/') has an empty name</code></pre>
+
+            <h4>
+                <pre>Path.with_stem(stem)</pre>
+            </h4>
+            <p>Retorna um novo caminho com o radical (nome sem extensão) alterado. Se o caminho original não tiver nome, <code>ValueError</code> é lançado:</p>
+            <pre><code class="python-repl">>>> p = Path('c:/Downloads/draft.txt')
+>>> p.with_stem('final')
+WindowsPath('c:/Downloads/final.txt')
+>>> p = Path('c:/Downloads/pathlib.tar.gz')
+>>> p.with_stem('lib')
+WindowsPath('c:/Downloads/lib.gz')
+>>> p = Path('c:/')
+>>> p.with_stem('')
+ValueError: WindowsPath('c:/') has an empty name</code></pre>
+
+            <h4>
+                <pre>Path.with_suffix(suffix)</pre>
+            </h4>
+            <p>Retorna um novo caminho com o sufixo alterado. Se o caminho original não tiver um sufixo, o novo sufixo será anexado. Se o sufixo for uma string vazia, o sufixo original será removido:</p>
+            <pre><code class="python-repl">>>> p = Path('c:/Downloads/pathlib.tar.gz')
+>>> p.with_suffix('.bz2')
+WindowsPath('c:/Downloads/pathlib.tar.bz2')
+>>> p = Path('README')
+>>> p.with_suffix('.txt')
+WindowsPath('README.txt')
+>>> p = Path('README.txt')
+>>> p.with_suffix('')
+WindowsPath('README')</code></pre>
+
+        </div>
+        <div id="8-3-2-path">
+            <h3>Objetos <code>Path</code></h3>
+            <p>Objetos <code>Path</code> herdam de <code>PurePath</code>. Além das operações de <code>PurePath</code>, eles também conseguem acessar o sistema de arquivos.</p>
+            <p>Considere que os próximos scripts sejam executados a partir da pasta <code>tmp</code> <a href="#estrutura-exemplo">referida acima</a>. A seguir, os principais métodos de <code>Path</code>.</p>
+            <h4>
+                <pre>Path.cwd()</pre>
+            </h4>
+            <p>Retorna um novo objeto <code>Path</code> representando a pasta atual.</p>
+            <pre><code class="python-repl">>>> Path.cwd()
+WindowsPath('C:/Users/siqueira/tmp')</code></pre>
+            <p>Minha pasta de usuário fica em <code>C:/Users/siqueira</code>, e a pasta <code>tmp</code> está dentro da minha pasta de usuário.</p>
+
+            <h4>
+                <pre>Path.home()</pre>
+            </h4>
+            <p>Retorna um novo <code>Path</code> representando a pasta do usuário.</p>
+            <pre><code class="python-repl">>>> Path.home()
+WindowsPath('C:/Users/siqueira')</code></pre>
+
+            <h4>
+                <pre>Path.stat()</pre>
+            </h4>
+            <p>Retorna um objeto <a href="https://docs.python.org/3/library/os.html#os.stat_result"><code>os.stat_result</code></a>, contendo informações sobre esse caminho.</p>
+            <pre><code class="python-repl">>>> p = Path('arquivo0.1.txt')
+>>> p.stat().st_size
+10
+>>> p.stat().st_mtime
+1714930648.787982</code></pre>
+            <p>O atributo <code>os.stat_result.st_mtime</code> é o tempo em segundos desde 01/01/1970, usado pelos computadores. Mas podemos convertê-lo para uma data:</p>
+            <pre><code class="python-repl">>>> from datetime import datetime
+>>> p = Path('arquivo0.1.txt')
+>>> ultima_modificacao = p.stat().st_mtime       
+>>> datetime.fromtimestamp(ultima_modificacao) 
+datetime.datetime(2024, 5, 6, 14, 37, 28, 787982)</code></pre>
+
+            <h4>
+                <pre>Path.exists()</pre>
+            </h4>
+            <p>Retorna <code>True</code> se o caminho aponta para um arquivo ou pasta existente.</p>
+            <pre><code class="python-repl">>>> Path('pasta1').exists()
+True
+>>> Path('pasta1/arquivo0.1.txt').exists()
+False</code></pre>
+            <h4>
+                <pre>Path.glob(pattern, *, case_sensitive=None)</pre>
+            </h4>
+            <p>Procura por <code>pattern</code> na pasta representada por esse caminho, retornando um iterador. Usa o padrão glob, explicado abaixo.</p>
+            <p>Para listar todos os arquivos <code>.txt</code> da pasta atual:</p>
+            <pre><code class="python-repl">>>> current = Path("tmp")
+>>> matched = current.glob("*.txt")
+>>> sorted_list = sorted(matched)
+>>> sorted_list
+[WindowsPath('arquivo0.1.txt'), WindowsPath('arquivo0.2.txt')]</code></pre>
+
+            <p><code>current = Path('.')</code> instancia um objeto que representa o caminho da pasta atual, que no nosso caso é <code>tmp</code>. Ao invocar o método <code>.glob('*.txt')</code> do objeto recém instanciado, estamos procurando por qualquer arquivo que termine com <code>.txt</code> na pasta atual. Esse método retorna um iterador de arquivos encontrados, que não necessariamente estão ordenados. Por isso, passamos o iterador como argumento à função <code>sorted()</code>, que automaticamente percorre todo o iterador e retorna os itens ordenados em uma lista.</p>
+            <p>É claro que poderíamos escrever esse código em apenas uma linha:</p>
+            <pre><code class="python-repl">>>> sorted(Path('.').glob('*.txt')) 
+[WindowsPath('arquivo0.1.txt'), WindowsPath('arquivo0.2.txt')]</code></pre>
+            <p>Para listar recursivamente todos os arquivos <code>.txt</code> a partir da pasta atual:</p>
+            <pre><code class="python-repl">>>> for p in sorted(Path('.').glob('**/*.txt')): p
+... 
+WindowsPath('arquivo0.1.txt')
+WindowsPath('arquivo0.2.txt')
+WindowsPath('pasta1/arquivo1.1.txt')
+WindowsPath('pasta2/arquivo2.1.txt')
+WindowsPath('pasta2/arquivo2.2.txt')
+WindowsPath('pasta2/pasta2.1/arquivo2.1.1.txt')
+WindowsPath('pasta2/pasta2.1/pasta2.1.1/arquivo2.1.1.1.txt')
+WindowsPath('pasta2/pasta2.1/pasta2.1.1/arquivo2.1.1.2.txt')</code></pre>
+            <p>Quando o argumento <code>case_sensitive</code> é passado como <code>None</code> ou não informado, esse método corresponde a caminhos usando regras de maiúsculas e minúsculas específicas da plataforma: normalmente, diferencia maiúsculas de minúsculas em Unix e não diferencia maiúsculas de minúsculas no Windows. Passe <code>case_sensitive</code> como argumento <code>True</code> ou <code>False</code> para substituir esse comportamento.</p>
+            <p>Atenção: usar o padrão <code>**</code> em grandes árvores de pastas pode consumir uma quantidade excessiva de tempo.</p>
+
+            <div class="info">
+                <h3>O padrão glob</h3>
+                <p>Para fazer correspondências com caminhos, muitas interfaces com o sistema de arquivos utilizam o <a href="https://en.wikipedia.org/wiki/Glob_(programming)">padrão glob</a>, incluindo as bibliotecas Python. Esse padrão é diferente do regex, e suporta apenas alguns caracteres curingas:</p>
+                <table class="custom align-left">
+                    <thead>
+                        <tr>
+                            <th>Curinga</th>
+                            <th>Descrição</th>
+                            <th>Exemplo</th>
+                            <th>Corresponde</th>
+                            <th>Não corresponde</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td rowspan="4"><code>*</code></td>
+                            <td rowspan="4">Corresponde a zero ou mais caracteres, excluindo o separador.</td>
+                            <td><code>file*</code></td>
+                            <td>Qualquer arquivo que comece com <code>file</code>, como <code>file</code>, <code>files</code>, ou <code>file.txt</code></td>
+                            <td><code>folder/file</code>, <code>fil</code>, ou <code>my_file</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>*file*</code></td>
+                            <td>Qualquer arquivo que tenha <code>file</code> no nome, como <code>file</code>, <code>file.txt</code>, ou <code>my_file</code></td>
+                            <td><code>folder/file</code>, ou <code>ile</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>*/file</code></td>
+                            <td>Arquivos <code>file</code> de qualquer pasta filha da pasta atual, como <code>folder/file</code> ou <code>directory/file</code></td>
+                            <td><code>file</code>, ou <code>folder/subfolder/file</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>folder/*</code></td>
+                            <td>Qualquer arquivo dentro da pasta <code>folder</code>, como <code>folder/file</code> ou <code>folder/image.jpg</code></td>
+                            <td><code>directory/file</code>, <code>file</code>, ou <code>folder/subfolder/file</code></td>
+                        </tr>
+
+                        <tr>
+                            <td rowspan="2"><code>**</code></td>
+                            <td rowspan="2">Corresponde a zero ou mais caracteres, incluindo o separador (representa zero ou mais diretórios recursivamente).</td>
+                            <td><code>**/file.txt</code></td>
+                            <td>Arquivos <code>file.txt</code> de qualquer pasta a partir da pasta atual, como <code>a/b/file.txt</code>, <code>file.txt</code>, ou <code>a/file.txt</code></td>
+                            <td><code>a/file</code>, ou <code>file</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>a/**/file*</code></td>
+                            <td>Qualquer arquivo que comece com <code>file</code>, de qualquer pasta a partir da pasta <code>a</code>, como <code>a/file</code> ou <code>a/b/file.txt</code></td>
+                            <td><code>file</code>, ou <code>a/my_file</code></td>
+                        </tr>
+
+                        <tr>
+                            <td><code>?</code></td>
+                            <td>Corresponde a um caractere qualquer.</td>
+                            <td><code>?at</code></td>
+                            <td><code>Cat</code>, <code>cat</code>, <code>Bat</code> ou <code>bat</code></td>
+                            <td><code>at</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>[abc]</code></td>
+                            <td>Corresponde a um dos caracteres entre os colchetes.</td>
+                            <td><code>[CB]at</code></td>
+                            <td><code>Cat</code> ou <code>Bat</code></td>
+                            <td><code>cat</code>, <code>bat</code> ou <code>CBat</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>[a-z]</code></td>
+                            <td>Corresponde a um dos caracteres entre o intervalo entre colchetes.</td>
+                            <td><code>Letter[0-9]</code></td>
+                            <td><code>Letter0</code>, <code>Letter1</code>, <code>Letter2</code> até <code>Letter9</code></td>
+                            <td><code>Letters</code>, <code>Letter</code> ou <code>Letter10</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h4>
+                <pre>Path.is_dir()</pre>
+            </h4>
+            <p>Retorna <code>True</code> se o caminho apontar para uma pasta (ou um link simbólico apontando para uma pasta), ou <code>False</code> caso contrário. Se o caminho não existir, ou for um link simbólico quebrado, retorna <code>False</code>.</p>
+            <pre><code class="python-repl">>>> Path("pasta2").is_dir()
+True
+>>> Path("pasta2/arquivo2.1.txt").is_dir()
+False
+>>> Path("pasta3").is_dir()
+False</code></pre>
+
+
+            <h4>
+                <pre>Path.is_file()</pre>
+            </h4>
+            <p>Retorna <code>True</code> se o caminho apontar para um arquivo regular (ou um link simbólico apontando para um arquivo regular), ou <code>False</code> caso contrário. Se o caminho não existir, ou for um link simbólico quebrado, retorna <code>False</code>.</p>
+            <pre><code class="python-repl">>>> Path("pasta2").is_file()
+False
+>>> Path("pasta2/arquivo2.1.txt").is_file()
+True
+>>> Path("arquivo.txt").is_file()
+False</code></pre>
+
+            <h4>
+                <pre>Path.open(mode='r', buffering=-1, encoding=None, errors=None, newline=None)</pre>
+            </h4>
+            <p>Abre o arquivo apontado pelo caminho, assim como a função incorporada <code>open()</code>:</p>
+            <pre><code class="python repl">>>> with Path('arquivo0.1.txt').open() as f: f.read()
+... 
+'arquivo0.1'</code></pre>
+
+            <h4>
+                <pre>Path.mkdir(mode=0o777, parents=False, exist_ok=False)</pre>
+            </h4>
+            <p>Cria um novo diretório no caminho fornecido. O <code>mode</code> é referente às permissões da pasta, equivalente ao valor <i>umask</i> de sistemas Unix. Se o caminho já existir, <code>FileExistsError</code> é lançado. Se <code>parents</code> for <code>True</code>, quaisquer pais ausentes deste caminho serão criados conforme necessário; eles são criados com as permissões padrão sem levar em consideração o modo (equivalente ao comando Unix <code>mkdir -p</code>). Se <code>parents</code> for <code>False</code> (o padrão), um pai ausente lança <code>FileNotFoundError</code>. Se o diretório destino já existir e <code>exist_ok</code> for <code>False</code> (o padrão), <code>FileExistsError</code> é lançado. Se <code>exist_ok</code> for <code>True</code>, <code>FileExistsError</code> não é lançado, a menos que o caminho fornecido já exista no sistema de arquivos e não seja um diretório (mesmo comportamento do comando POSIX <code>mkdir -p</code>).</p>
+            <p>Tente criar uma pasta dentro de outra: <code>Path('vo/pai/').mkdir(parents=True)</code>.</p>
+
+            <h4>
+                <pre>Path.touch(mode=0o666, exist_ok=True)</pre>
+            </h4>
+            <p>Cria um arquivo vazio no caminho fornecido. O <code>mode</code> é referente às permissões do arquivo, equivalente ao valor <i>umask</i> de sistemas Unix. Se o arquivo já existir e <code>exist_ok</code> for <code>True</code>, seu horário de modificação é atualizado para o horário atual (assim como o comando Unix <code>touch</code>), mas se <code>exist_ok</code> for <code>False</code>, lança <code>FileExistsError</code>.</p>
+            <p>Se você criou a pasta <code>vo/pai</code> na seção anterior, tente criar um arquivo dentro desta pasta: <code>Path('vo/pai/filho.txt').touch()</code>.</p>
+
+            <h4>
+                <pre>Path.write_text(data, encoding=None, errors=None, newline=None)</pre>
+            </h4>
+            <p>Abre o arquivo no caminho fornecido, escreve <code>data</code> nele, e o fecha, retornando a quantidade de bytes escritos. Se não existir, o cria. Se existir, o sobrescreve. Os parâmetros opcionais são os mesmos da função incorporada <code>open()</code>.</p>
+            <pre><code class="python repl">>>> Path('vo/pai/filho.txt').write_text('arquivo de texto com algum conteúdo.', 'utf8')
+36</code></pre>
+
+            <h4>
+                <pre>Path.read_text(encoding=None, errors=None)</pre>
+            </h4>
+            <p>Abre o arquivo no caminho fornecido, retorna seu conteúdo em string, e o fecha. Os parâmetros opcionais são os mesmos da função incorporada <code>open()</code>.</p>
+            <pre><code class="python-repl">>>> Path('vo/pai/filho.txt').read_text('utf8')  
+'arquivo de texto com algum conteúdo.'</code></pre>
+
+            <div class="info">
+                <p>Se você for abrir um arquivo para escrevê-lo ou lê-lo apenas uma vez, e tiver objetos <code>Path</code> instanciados, você pode usar os respectivos métodos de <code>Path</code>. Agora, se for realizar várias operações de leitura ou escrita em um arquivo, melhor usar a função <code>open()</code>, para não ter que ficar abrindo e fechando o arquivo a cada operação.</p>
+            </div>
+
+            <h4>
+                <pre>Path.unlink(missing_ok=False)</pre>
+            </h4>
+            <p>Exclui este arquivo ou link simbólico. Se for um diretório, use <code>Path.rmdir()</code>. Se o caminho não existir, é lançado <code>FileNotFoundError</code> caso <code>missing_ok</code> for <code>False</code>, e não é lançado nada caso for <code>True</code> (equivalente ao comando Unix <code>rm -f</code>).</p>
+            <p>Tente excluir o arquivo criado anteriormente: <code>Path('vo/pai/filho.txt').unlink()</code></p>
+            <h4>
+                <pre>Path.rmdir()</pre>
+            </h4>
+            <p>Exclui o diretório, que deve estar vazio.</p>
+            <p>Tente excluir os diretórios criados anteriormente:</p>
+            <pre><code class="python-repl">>>> Path('vo/').rmdir()    
+OSError: [WinError 145] A pasta não está vazia: 'vo'
+>>> Path('vo/pai').rmdir()
+>>> Path('vo/').rmdir()</code></pre>
+            <h4>
+                <pre>Path.iterdir()</pre>
+            </h4>
+            <p>Itera pelo conteúdo da pasta. Os itens são gerados em ordem arbitrária. Se um arquivo for removido ou adicionado ao diretório após a criação do iterador, o comportamento não é especificado pela documentação. Esse método não itera recursivamente (pastas dentro de pastas). Para tanto, use o método <code>Path.walk()</code> disponível a partir do Python 3.12.</p>
+            <table>
+                <tr>
+                    <th>Código</th>
+                    <th>Saída</th>
+                </tr>
+                <tr>
+                    <td>
+                        <pre><code>def recursive_walk(path):
+    for p in Path(path).iterdir():
+        if p.is_file(): print(p)
+        else: recursive_walk(p)
+
+recursive_walk('.')</code></pre>
+                    </td>
+                    <td>
+                        <pre>pasta2/pasta2.1/arquivo2.1.1.2.txt
+pasta2/pasta2.1/arquivo2.1.1.txt
+pasta2/pasta2.1/arquivo2.1.1.1.txt
+pasta2/arquivo2.1.txt
+pasta2/arquivo2.2.txt
+arquivo0.2.txt
+arquivo0.1.txt
+pasta1/arquivo1.1.txt</pre>
+                    </td>
+                </tr>
+            </table>
+
+            <h4>
+                <pre>Path.walk(top_down=True, on_error=None, follow_symlinks=False)</pre>
+            </h4>
+            <p>Itera recursivamente pelo conteúdo da pasta. Para cada diretório, o iterador gera uma tupla <code>(dirpath, dirnames, filenames)</code>. <code>dirpath</code> é o <code>Path</code> do diretório atualmente sendo percorrido, <code>dirnames</code> é uma lista de strings para cada diretório filho de <code>dirpath</code>, e <code>filenames</code> é uma lista de strings para cada arquivo regular de <code>dirpath</code>. Se as listas são ordenadas ou não, depende do sistema operacional.</p>
+            <p>Se <code>follow_symlinks</code> for falso (o padrão), o percurso não segue links simbólicos e, em vez disso, os adiciona à lista <code>filenames</code>. Se <code>follow_symlinks</code> for verdadeiro, links simbólicos são resolvidos e colocados em <code>dirnames</code> ou <code>filenames</code>, conforme apropriados e, consequentemente, percorridos caso apontem para diretórios. Atenção: Definir <code>follow_symlinks</code> como <code>True</code> pode levar à recursão infinita se um link apontar para um diretório pai dele mesmo. <code>Path.walk()</code> não rastreia os diretórios que já visitou.</p>
+            <p>Se <code>top_down</code> for verdadeiro (o padrão), os subdiretórios são percorridos antes dos arquivos, senão, os arquivos são percorridos antes dos subdiretórios. O seguinte exemplo lista recursivamente o diretório <code>tmp</code>:</p>
+            <pre><code class="python-repl">>>> for trio in Path('.').walk(): print(trio)
+...
+(WindowsPath('.'), ['pasta1', 'pasta2'], ['arquivo0.1.txt', 'arquivo0.2.txt'])
+(WindowsPath('pasta1'), [], ['arquivo1.1.txt'])
+(WindowsPath('pasta2'), ['pasta2.1'], ['arquivo2.1.txt', 'arquivo2.2.txt'])
+(WindowsPath('pasta2/pasta2.1'), ['pasta2.1.1'], ['arquivo2.1.1.txt'])
+(WindowsPath('pasta2/pasta2.1/pasta2.1.1'), [], ['arquivo2.1.1.1.txt', 'arquivo2.1.1.2.txt'])</code></pre>
+            </td>
+            <td>
+                <pre><code class="python-repl">>>> for trio in Path('.').walk(top_down=False): print(trio) 
+... 
+(WindowsPath('pasta1'), [], ['arquivo1.1.txt'])
+(WindowsPath('pasta2/pasta2.1/pasta2.1.1'), [], ['arquivo2.1.1.1.txt', 'arquivo2.1.1.2.txt'])
+(WindowsPath('pasta2/pasta2.1'), ['pasta2.1.1'], ['arquivo2.1.1.txt'])
+(WindowsPath('pasta2'), ['pasta2.1'], ['arquivo2.1.txt', 'arquivo2.2.txt'])
+(WindowsPath('.'), ['pasta1', 'pasta2'], ['arquivo0.1.txt', 'arquivo0.2.txt'])</code></pre>
+
+                <p>Isso implica que, como <code>Path.rmdir()</code> não pode excluir diretórios vazios, para excluir recursivamente um diretório com <code>Path.walk()</code>, é necessário percorrê-lo de baixo para cima, isto é, com <code>top_down=False</code>. A seguinte função exclui recursivamente o conteúdo de um diretório:</p>
+                <pre><code>def rmdir(path):
+    """Delete everything reachable from the directory "path".
+    CAUTION: This is dangerous! For example, if path == '/',
+    it could delete all of your files.
+    """
+    for root, dirs, files in Path(path).walk(top_down=False):
+        for name in files:
+            (root / name).unlink()
+        for name in dirs:
+            (root / name).rmdir()</code></pre>
+                <p>Observe as linhas 8 e 10. Como <code>Path.walk()</code> lista os caminhos relativos à <code>path</code>, este deve ser acrescido à <code>name</code> para localizar o caminho corretamente.</p>
+
+                <p>Quando <code>top_down = True</code>, a lista <code>dirnames</code> pode ser modificada, e <code>Path.walk()</code> percorrerá apenas os subdiretórios cujos nomes permanecem em <code>dirnames</code>. Isso pode ser usado para podar o percurso, ou para impor uma ordem específica de visita, ou mesmo para atualizar <code>Path.walk()</code> sobre diretórios novos ou modificados antes de retomar o percurso. Modificar <code>dirnames</code> quando <code>top_down = False</code> não tem efeito no comportamento de <code>Path.walk()</code> uma vez que os diretórios em <code>dirnames</code> já foram percorridos antes de <code>dirpath</code>.</p>
+                <p>O seguinte exemplo exibe a quantidade de bytes ocupada por cada arquivo de cada diretório a partir do diretório atual.</p>
+                <table>
+                    <tr>
+                        <th>Código</th>
+                        <th>Saída</th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre><code>for root, dirs, files in Path(".").walk(on_error=print):
+    space = sum((root / file).stat().st_size for file in files)
+    print(f"{root} ocupa {space} bytes com {len(files)} arquivos")
+    if "__pycache__" in dirs:
+        dirs.remove("__pycache__")</code></pre>
+                        </td>
+                        <td>
+                            <pre>. ocupa 20 bytes com 2 arquivos
+pasta1 ocupa 10 bytes com 1 arquivos
+pasta2 ocupa 20 bytes com 2 arquivos
+pasta2\pasta2.1 ocupa 12 bytes com 1 arquivos
+pasta2\pasta2.1\pasta2.1.1 ocupa 28 bytes com 2 arquivos</pre>
+                        </td>
+                    </tr>
+                </table>
+                <p>Se <code>on_error</code> for <code>None</code> (o padrão), erros são ignorados. Senão, o argumento deve ser invocável (uma função); ele será invocado com uma instância de <code>OSError</code> como argumento. O invocável pode lidar com o erro e continuar o percurso ou propagá-lo e encerrar o percurso.</p>
+        </div>
+        <div id="8-3-2-os">
+            <h3>O módulo <code>os</code></h3>
+            <p>O <a href="https://docs.python.org/3/library/os.html#module-os">módulo <code>os</code></a> fornece uma maneira portátil de acessar o sistema operacional. Dentre suas funções, se encontram várias para manipulação do sistema de arquivos, assim como o módulo <code>pathlib</code>. A diferença é que o módulo <code>pathlib</code> é uma alternativa mais moderna e orientada a objetos de várias das funções de <code>os</code>. A seguinte tabela apresenta as funções de <code>os</code> correspondentes a <code>Path</code>.</p>
+            <table class="custom align-left">
+                <thead>
+                    <tr>
+                        <th>
+                            <pre>os</pre>
+                        </th>
+                        <th>
+                            <pre>pathlib</pre>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <a href="https://docs.python.org/3/library/os.path.html#os.path.abspath"><code>os.path.abspath()</code></a>
+                        </td>
+                        <td>
+                            <a href="https://docs.python.org/3/library/pathlib.html#pathlib.Path.absolute"><code>Path.absolute()</code></a> <a href="#footnote1">[1]</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <a href="https://docs.python.org/3/library/os.path.html#os.path.realpath"><code>os.path.realpath()</code></a>
+                        </td>
+                        <td>
+                            <a href="https://docs.python.org/3/library/pathlib.html#pathlib.Path.resolve"><code>Path.resolve()</code></a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <a href="https://docs.python.org/3/library/os.html#os.chmod"><code>os.chmod()</code></a>
+                        </td>
+                        <td>
+                            <a href="https://docs.python.org/3/library/pathlib.html#pathlib.Path.chmod"><code>Path.chmod()</code></a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <a href="https://docs.python.org/3/library/os.html#os.mkdir"><code>os.mkdir()</code></a>
+                        </td>
+                        <td>
+                            <a href="https://docs.python.org/3/library/pathlib.html#pathlib.Path.mkdir"><code>Path.mkdir()</code></a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <a href="https://docs.python.org/3/library/os.html#os.makedirs"><code>os.makedirs()</code></a>
+                        </td>
+                        <td>
+                            <a href="https://docs.python.org/3/library/pathlib.html#pathlib.Path.mkdir"><code>Path.mkdir()</code></a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <a href="https://docs.python.org/3/library/os.html#os.rename"><code>os.rename()</code></a>
+                        </td>
+                        <td>
+                            <a href="https://docs.python.org/3/library/pathlib.html#pathlib.Path.rename"><code>Path.rename()</code></a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <a href="https://docs.python.org/3/library/os.html#os.replace"><code>os.replace()</code></a>
+                        </td>
+                        <td>
+                            <a href="https://docs.python.org/3/library/pathlib.html#pathlib.Path.replace"><code>Path.replace()</code></a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <a href="https://docs.python.org/3/library/os.html#os.rmdir"><code>os.rmdir()</code></a>
+                        </td>
+                        <td>
+                            <a href="https://docs.python.org/3/library/pathlib.html#pathlib.Path.rmdir"><code>Path.rmdir()</code></a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <a href="https://docs.python.org/3/library/os.html#os.remove"><code>os.remove()</code></a>, <a href="https://docs.python.org/3/library/os.html#os.unlink"><code>os.unlink()</code></a>
+                        </td>
+                        <td>
+                            <a href="https://docs.python.org/3/library/pathlib.html#pathlib.Path.unlink"><code>Path.unlink()</code></a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <a href="https://docs.python.org/3/library/os.html#os.getcwd"><code>os.getcwd()</code></a>
+                        </td>
+                        <td>
+                            <a href="https://docs.python.org/3/library/pathlib.html#pathlib.Path.cwd"><code>Path.cwd()</code></a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <a href="https://docs.python.org/3/library/os.path.html#os.path.exists"><code>os.path.exists()</code></a>
+                        </td>
+                        <td>
+                            <a href="https://docs.python.org/3/library/pathlib.html#pathlib.Path.exists"><code>Path.exists()</code></a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <a href="https://docs.python.org/3/library/os.path.html#os.path.expanduser"><code>os.path.expanduser()</code></a>
+                        </td>
+                        <td>
+                            <a href="https://docs.python.org/3/library/pathlib.html#pathlib.Path.expanduser"><code>Path.expanduser()</code></a> e
+                            <a href="https://docs.python.org/3/library/pathlib.html#pathlib.Path.home"><code>Path.home()</code></a>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <a href="https://docs.python.org/3/library/os.html#os.listdir"><code>os.listdir()</code></a>
+                        </td>
+                        <td>
+                            <a href="https://docs.python.org/3/library/pathlib.html#pathlib.Path.iterdir"><code>Path.iterdir()</code></a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <a href="https://docs.python.org/3/library/os.html#os.walk"><code>os.walk()</code></a>
+                        </td>
+                        <td>
+                            <a href="https://docs.python.org/3/library/pathlib.html#pathlib.Path.walk"><code>Path.walk()</code></a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <a href="https://docs.python.org/3/library/os.path.html#os.path.isdir"><code>os.path.isdir()</code></a>
+                        </td>
+                        <td>
+                            <a href="https://docs.python.org/3/library/pathlib.html#pathlib.Path.is_dir"><code>Path.is_dir()</code></a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <a href="https://docs.python.org/3/library/os.path.html#os.path.isfile"><code>os.path.isfile()</code></a>
+                        </td>
+                        <td>
+                            <a href="https://docs.python.org/3/library/pathlib.html#pathlib.Path.is_file"><code>Path.is_file()</code></a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <a href="https://docs.python.org/3/library/os.path.html#os.path.islink"><code>os.path.islink()</code></a>
+                        </td>
+                        <td>
+                            <a href="https://docs.python.org/3/library/pathlib.html#pathlib.Path.is_symlink"><code>Path.is_symlink()</code></a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <a href="https://docs.python.org/3/library/os.html#os.link"><code>os.link()</code></a>
+                        </td>
+                        <td>
+                            <a href="https://docs.python.org/3/library/pathlib.html#pathlib.Path.hardlink_to"><code>Path.hardlink_to()</code></a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <a href="https://docs.python.org/3/library/os.html#os.symlink"><code>os.symlink()</code></a>
+                        </td>
+                        <td>
+                            <a href="https://docs.python.org/3/library/pathlib.html#pathlib.Path.symlink_to"><code>Path.symlink_to()</code></a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <a href="https://docs.python.org/3/library/os.html#os.readlink"><code>os.readlink()</code></a>
+                        </td>
+                        <td>
+                            <a href="https://docs.python.org/3/library/pathlib.html#pathlib.Path.readlink"><code>Path.readlink()</code></a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <a href="https://docs.python.org/3/library/os.path.html#os.path.relpath"><code>os.path.relpath()</code></a>
+                        </td>
+                        <td>
+                            <a href="https://docs.python.org/3/library/pathlib.html#pathlib.PurePath.relative_to"><code>PurePath.relative_to()</code></a> <a href="#footnote2">[2]</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <a href="https://docs.python.org/3/library/os.html#os.stat"><code>os.stat()</code></a>
+                        </td>
+                        <td>
+                            <a href="https://docs.python.org/3/library/pathlib.html#pathlib.Path.stat"><code>Path.stat()</code></a>,
+                            <a href="https://docs.python.org/3/library/pathlib.html#pathlib.Path.owner"><code>Path.owner()</code></a>,
+                            <a href="https://docs.python.org/3/library/pathlib.html#pathlib.Path.group"><code>Path.group()</code></a>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <a href="https://docs.python.org/3/library/os.path.html#os.path.isabs"><code>os.path.isabs()</code></a>
+                        </td>
+                        <td>
+                            <a href="https://docs.python.org/3/library/pathlib.html#pathlib.PurePath.is_absolute"><code>PurePath.is_absolute()</code></a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <a href="https://docs.python.org/3/library/os.path.html#os.path.join"><code>os.path.join()</code></a>
+                        </td>
+                        <td>
+                            <a href="https://docs.python.org/3/library/pathlib.html#pathlib.PurePath.joinpath"><code>PurePath.joinpath()</code></a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <a href="https://docs.python.org/3/library/os.path.html#os.path.basename"><code>os.path.basename()</code></a>
+                        </td>
+                        <td>
+                            <a href="https://docs.python.org/3/library/pathlib.html#pathlib.PurePath.name"><code>PurePath.name</code></a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <a href="https://docs.python.org/3/library/os.path.html#os.path.dirname"><code>os.path.dirname()</code></a>
+                        </td>
+                        <td>
+                            <a href="https://docs.python.org/3/library/pathlib.html#pathlib.PurePath.parent"><code>PurePath.parent</code></a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <a href="https://docs.python.org/3/library/os.path.html#os.path.samefile"><code>os.path.samefile()</code></a>
+                        </td>
+                        <td>
+                            <a href="https://docs.python.org/3/library/pathlib.html#pathlib.Path.samefile"><code>Path.samefile()</code></a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <a href="https://docs.python.org/3/library/os.path.html#os.path.splitext"><code>os.path.splitext()</code></a>
+                        </td>
+                        <td>
+                            <a href="https://docs.python.org/3/library/pathlib.html#pathlib.PurePath.stem"><code>PurePath.stem</code></a> e
+                            <a href="https://docs.python.org/3/library/pathlib.html#pathlib.PurePath.suffix"><code>PurePath.suffix</code></a>
+
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p><span id="#footnote1">[1]</span> <a href="https://docs.python.org/3/library/os.path.html#os.path.abspath"><code>os.path.abspath()</code></a> normaliza o caminho resultante, que pode alterar seu significado na presença de links simbólicos, mas <a href="https://docs.python.org/3/library/pathlib.html#pathlib.Path.absolute"><code>Path.absolute()</code></a> não.</p>
+            </aside>
+            <p><span id="#footnote2">[2]</span> <a href="https://docs.python.org/3/library/pathlib.html#pathlib.PurePath.relative_to"><code>PurePath.relative_to()</code></a> requer que <code>self</code> seja o subcaminho do argumento, mas <a href="https://docs.python.org/3/library/os.path.html#os.path.relpath"><code>os.path.relpath()</code></a> não.</p>
+        </div>
+        <div id="8-3-3-shutil">
+            <h3>O módulo <code>shutil</code></h3>
+            <p>Abreviação de <i>shell utilities</i>, o módulo <code>shutil</code> oferece diversas operações de alto nível para manipulação em lote de cópias, exclusões e compressões de caminhos. Algumas de suas funções são equivalentes às funções de <code>os</code> e <code>pathlib</code>, porém são mais eficientes.</p>
+
+            <h4>
+                <pre>shutil.copy(src, dst, *, follow_symlinks=True)</pre>
+            </h4>
+            <p>Copia o arquivo <code>src</code> para o arquivo ou diretório <code>dst</code>. <code>src</code> e <code>dst</code> podem ser strings ou <code>PurePath</code>s. Se <code>dst</code> for um diretório, o arquivo será copiado para <code>dst</code> mantendo seu nome. Se <code>dst</code> for um arquivo que já existe, ele será substituído. Retorna o caminho para o arquivo recém-criado.</p>
+            <p>Se <code>src</code> for um link simbólico, <code>dst</code> será criado como um link simbólico caso <code>follow_symlinks</code> seja falso, ou será uma cópia do arquivo ao qual <code>src</code> se refere caso <code>follow_symlinks</code> seja verdadeiro. <code>shutil.copy()</code> copia os dados do arquivo e seu modo de permissão (consulte <a href="https://docs.python.org/3/library/os.html#os.chmod">os.chmod()</a>). Outros metadados, como os horários de criação e modificação do arquivo, não são preservados. Para preservar todos os metadados do arquivo original, use <code>shutil.copy2()</code>.</p>
+            <pre><code class="python-repl">>>> from pathlib import Path                           
+>>> import shutil
+>>> file = Path('arquivo0.1.txt')
+>>> shutil.copy(file,'pasta1/arquivo0.1(copiado).txt')
+'pasta1/arquivo0.1(copiado).txt'</code></pre>
+
+            <h4>
+                <pre>shutil.copy2(src, dst, *, follow_symlinks=True)</pre>
+            </h4>
+            <p>Idêntico a <code>shutil.copy()</code>, mas tenta preservar todos os metadados do arquivo.</p>
+
+            <h4>
+                <pre>shutil.copytree(src, dst, symlinks=False, ignore=None, copy_function=copy2, ignore_dangling_symlinks=False, dirs_exist_ok=False)</pre>
+            </h4>
+            <p>Copia recursivamente toda a árvore de diretórios com raiz em <code>src</code> para o diretório <code>dst</code> e retorna o diretório de destino.</p>
+            <p>O parâmetro <code>ignore</code> é um invocável que você pode usar para filtrar arquivos ou pastas que não queira copiar. Consulte a <a href="https://docs.python.org/3/library/shutil.html#shutil.copytree">documentação</a> para mais detalhes.</p>
+            <p>Se <code>dirs_exist_ok</code> for falso (o padrão) e <code>dst</code> já existir, <code>FileExistsError</code> é lançado. Com <code>dirs_exist_ok</code> verdadeiro, a cópia continuará, substituindo arquivos existentes em <code>dst</code> pelos correspondentes de <code>src</code>.</p>
+
+            <h4>
+                <pre>shutil.rmtree(path, ignore_errors=False, onerror=None, *, onexc=None, dir_fd=None)</pre>
+            </h4>
+            <p>Exclui uma árvore de diretórios. Se <code>ignore_errors</code> for falso, erros são tratados pelos invocáveis <code>onerror</code> e <code>onexc</code>.</p>
+
+            <h4>
+                <pre>shutil.move(src, dst, copy_function=copy2)</pre>
+            </h4>
+            <p>Move recursivamente <code>src</code> para <code>dst</code> e retorna o destino.</p>
+        </div>
+        <div id="8-3-4-exercicios">
+            <h3>Exercícios</h3>
+            <ol class="excs">
+                <li>Programa para copiar, mover, ou excluir um arquivo:
+                    <ul>
+                        <li>Solicitar ao usuário um caminho de arquivo. Caso o arquivo não exista, ou seja um diretório, informar o usuário e encerrar o programa.</li>
+                        <li>Solicitar ao usuário se quer excluir, copiar, ou mover o arquivo. Caso o usuário escolha copiar ou mover o arquivo, solicitar ao usuário para onde copiar ou mover o arquivo.</li>
+                    </ul>
+                </li>
+                <li>Ler um caminho de diretório e listar os arquivos e diretórios presentes nele.</li>
+                <li>Ler um caminho de diretório e uma extensão de arquivo e listar apenas os arquivos naquele diretório com a extensão informada.</li>
+                <li>Ler um caminho para um arquivo de texto existente $origem$, e um caminho para um novo arquivo $destino$. Caso o arquivo $origem$ não exista, ou o arquivo $destino$ exista, informar o usuário e encerrar o programa. Copiar o conteúdo de $origem$ para $destino$, mas convertendo letras minúsculas para maiúsculas.</li>
+                <li>Ler um caminho de diretório e listar recursivamente apenas o radical (nome sem extensão) dos seguintes arquivos de áudio: mp3, m4a, aac, flac, ogg e wav.</li>
+                <li>Ler um caminho de diretório e listar recursivamente apenas os diretórios vazios.</li>
+                <li>Ler um caminho de diretório e listar seus arquivos ordenados pela extensão.</li>
+                <li>Ler um caminho de diretório e listar seus arquivos ordenados pela data de modificação.</li>
+                <li>Ler um caminho de diretório, buscar recursivamente o maior arquivo, e escrever seu nome e tamanho em megabytes.</li>
+                <li>Ler um caminho de diretório e uma extensão de arquivo. Escrever quantos arquivos há recursivamente com aquela extensão naquele diretório.</li>
+                <li>Ler um caminho de diretório <code>backup</code>, um caminho de diretório <code>search</code> e um padrão glob <code>pattern</code>. Procurar recursivamente em <code>search</code> por qualquer arquivo cujo nome corresponda a <code>pattern</code>, pedir confirmação do usuário e movê-lo para <code>backup</code>, mas mantendo o caminho relativo do arquivo. Por exemplo, se <code>backup</code> for <code>/home/user/backup</code>, e <code>search</code> for <code>/home/user/Downloads</code> e o caminho do arquivo encontrado for <code>antigos/2014/arquivo-velho.txt</code>, o arquivo deve ser movido para <code>/home/user/backup/antigos/2014/arquivo-velho.txt</code>.</li>
+                <li>Ler um caminho de diretório e listar recursivamente os arquivos que tenham o mesmo radical.</li>
+                <!-- <li>Ler um caminho de diretório, listar recursivamente os arquivos que tenham o mesmo radical, e solicitar a exclusão dos arquivos de mesmo radical, mantendo o mais recente.</li> -->
+            </ol>
+        </div>
+        <!-- falar sobre https://realpython.com/working-with-files-in-python/#extracting-zip-archives ? -->
+    </div>
+</div>
