@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+
+<head>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+        }, false);
+    </script>
+
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
+    <script defer>hljs.configure({ cssSelector: "code", languages: ["python"] }); hljs.highlightAll(); hljs.initLineNumbersOnLoad();</script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous" onload="renderMathInElement(document.body,{delimiters:[{left: '$$', right: '$$', display: true},{left: '$', right: '$', display: false}]});"></script>
+
+    <style>
+        img {
+            max-width: 90vw;
+            max-height: 90vh;
+        }
+
+        .center {
+            text-align: center;
+        }
+
+        .katex {
+            /* o padrão é 1.21, vc pode remover essa configuração se quiser deixar o padrão */
+            font-size: 1.0em;
+        }
+
+        table.custom,
+        table.custom>thead>tr>th,
+        table.custom>tbody>tr>td,
+        table.custom>tbody>tr>th {
+            /* tabela centralizada e com bordas */
+            border: 1px solid black;
+            border-collapse: collapse;
+            margin-left: auto;
+            margin-right: auto;
+            padding-left: 5px;
+            padding-right: 5px;
+            text-align: center;
+        }
+
+        table pre {
+            /* tags pre dentro de tabelas são alinhadas à esquerda, sem margem interna */
+            margin: 0;
+            text-align: left !important;
+        }
+
+        td:has(pre) {
+            /* tags pre dentro de tabela são alinhadas no topo */
+            vertical-align: top;
+        }
+
+        code:not(pre code) {
+            /* tags code não filhas de pre */
+            padding-top: 0px !important;
+            padding-bottom: 0px !important;
+        }
+
+        table.align-left th,
+        table.align-left td {
+            /* alinha à esquerda as células da tabela */
+            text-align: left !important;
+        }
+
+        /* inicia a lista de exercícios */
+        ol.excs {
+            padding-inline-start: 0em;
+            counter-reset: excs;
+            list-style: none;
+        }
+
+        /* põe um numerador num item da lista de exercícios, desde que não seja da classe no-mark */
+        ol.excs>li:not(.no-mark)::before {
+            counter-increment: excs;
+            content: counters(excs, ".") ". ";
+        }
+
+        /* põe uma barra vertical ao lado do item da lista de exercícios */
+        ol.excs>li {
+            /* Change this to adjust the line color and thickness */
+            border-left: 2px solid #000;
+            /* Optional: Add padding to create some space between the bar and content */
+            padding-left: 10px;
+            margin-block-start: 1em;
+            margin-block-end: 1em;
+        }
+
+        ol.section {
+            counter-reset: section;
+            list-style-type: none;
+        }
+
+        ol.section li::before {
+            counter-increment: section;
+            content: counters(section, ".") ". ";
+        }
+
+        td.hljs-ln-numbers {
+            /* estilizar as linhas de código da extensao highlightjs-line-numbers */
+            color: #ccc;
+            border-right: 1px solid #999;
+            padding-right: 5px;
+        }
+
+        td.hljs-ln-code {
+            /* estilizar as linhas de código da extensao highlightjs-line-numbers */
+            padding-left: 10px;
+        }
+
+        .info {
+            border-left: 6px solid blue;
+            padding-left: 1%;
+        }
+    </style>
+</head>
+
+<div id="8-strings-and-serialization">
+    <h1>8 Strings e serialização</h1>
+    <div id="serializing-objects">
+        <h2>8.4 Serializando objetos</h2>
+        <p>Como desenvolvedor, às vezes você precisa enviar hierarquias complexas de objetos por uma rede ou salvar o estado interno de seus objetos em disco para uso posterior. Para fazer isso, você pode usar um processo chamado <b>serialização</b>, ou <i>marshalling</i>, que converte teus objetos em um fluxo linear de bytes. O processo inverso, desserialização, ou <i>unmarshalling</i>, pega esse fluxo de bytes e converte de volta ao objeto original.</p>
+        <p>Python fornece o módulo <code>pickle</code> que converte objetos em bytes que podem ser salvos em arquivos ou enviados via rede. Python também tem o módulo <code>json</code>, que converte objetos em strings utilizando o padrão JSON.</p>
+        <p>Escolha <code>json</code> quando você quer interoperabilidade entre diferentes linguagens ou um formato humanamente legível. Com <code>json</code> você consegue converter a maioria dos objetos incorporados do Python, mas para outros objetos, você pode precisar de algumas adaptações.</p>
+        <p>Escolha <code>pickle</code> se você não precisa de um formato humanamente legível para objetos serializados, ou de um formato interoperável, ou se precisa de desempenho, pois objetos serializados em bytes ocupam menos espaços. Com <code>pickle</code> você consegue converter qualquer objeto Python, até os de terceiros, com algumas exceções.</p>
+        <div id="8-4-1-pickle">
+            <h3>8.4.1 O módulo <code>pickle</code></h3>
+            <p>Quatro funções básicas:</p>
+            <ol>
+                <li><code>pickle.dump(obj, file, protocol=None, *, fix_imports=True, buffer_callback=None)</code></li>
+                <li><code>pickle.dumps(obj, protocol=None, *, fix_imports=True, buffer_callback=None)</code></li>
+                <li><code>pickle.load(file, *, fix_imports=True, encoding="ASCII", errors="strict", buffers=None)</code></li>
+                <li><code>pickle.loads(bytes_object, *, fix_imports=True, encoding="ASCII", errors="strict", buffers=None)</code></li>
+            </ol>
+            <p>A função <code>dump</code> salva o objeto <code>obj</code> no arquivo <code>file</code>. A função <code>dumps</code> retorna o objeto <code>obj</code> como uma string de bytes. Inversamente, a função <code>load</code> retorna um objeto carregado do arquivo <code>file</code>, e <code>loads</code> retorna um objeto carregado de uma string de bytes <code>bytes_object</code>.</p>
+            <p>O seguinte exemplo guarda uma versão de um objeto, para posteriormente restaurá-lo, e modifica o objeto original.</p>
+            <pre><code>import pickle
+
+class Example:
+    def __init__(self, a_number=35, a_string="hey", a_list=[1, 2, 3], a_dict={"first": "a", "second": 2, "third": [1, 2, 3]}, a_tuple=(22, 23)):
+        self.a_number = a_number
+        self.a_string = a_string
+        self.a_list = a_list
+        self.a_dict = a_dict
+        self.a_tuple = a_tuple
+
+
+my_object = Example()
+
+my_pickled_object = pickle.dumps(my_object)  # Pickling the object
+print(f"This is my pickled object:\n{my_pickled_object}\n")
+
+my_object.a_dict = None
+
+my_unpickled_object = pickle.loads(my_pickled_object)  # Unpickling the object
+print(f"This is a_dict of the unpickled object:\n{my_unpickled_object.a_dict}\n")</code></pre>
+            <p>Saída:</p>
+            <pre><code class="python-repl">This is my pickled object:
+b'\x80\x04\x95\x97\x00\x00\x00\x00\x00\x00\x00\x8c\x08__main__\x94\x8c\x07Example\x94\x93\x94)\x81\x94}\x94(\x8c\x08a_number\x94K#\x8c\x08a_string\x94\x8c\x03hey\x94\x8c\x06a_list\x94]\x94(K\x01K\x02K\x03e\x8c\x06a_dict\x94}\x94(\x8c\x05first\x94\x8c\x01a\x94\x8c\x06second\x94K\x02\x8c\x05third\x94]\x94(K\x01K\x02K\x03eu\x8c\x07a_tuple\x94K\x16K\x17\x86\x94ub.'
+
+This is a_dict of the unpickled object:
+{'first': 'a', 'second': 2, 'third': [1, 2, 3]}
+
+This is a_dict of the original object:
+None</code></pre>
+
+            <h4>Protocolos de <i>pickling</i></h4>
+            <p>O módulo <code>pickle</code> é específico do Python. Mesmo assim, ele evoluiu com o tempo tempo. Portanto, se você usou uma versão específica para serializar um objeto, pode não ser possível desserializá-lo numa versão mais antiga.</p>
+            <p>Versões mais recentes do protocolo oferecem mais recursos e melhorias, mas estão limitadas a versões mais altas do Python. Para identificar o protocolo mais novo suportado pelo seu interpretador, verifique o valor da constante <code>pickle.HIGHEST_PROTOCOL</code>.</p>
+            <p>Se você não especificar o protocolo nas funções de <code>pickle</code>, será usada a versão padrão de seu interpretador, definida em <code>pickle.DEFAULT_PROTOCOL</code>.</p>
+
+            <h4>Objetos não serializáveis</h4>
+            <p>O módulo <code>pickle</code> pode serializar mais tipos do que o módulo <code>json</code>. Mas nem tudo é serializável por <code>pickle</code>, como objetos como conexões de banco de dados, sockets de rede abertos e threads em execução.</p>
+            <p>Biblioteca de terceiros, como o <code>dill</code>, podem estender as capacidades de <code>pickle</code>, permitindo a serialização de tipos menos comuns, como funções com <a href="https://realpython.com/introduction-to-python-generators/">yield</a>s, funções aninhadas, lambdas, entre outros.</p>
+            <p>Até mesmo bibliotecas como <code>dill</code> podem não conseguir serializar certos objetos, como uma conexão com o banco de dados. Neste caso, você pode excluir tais objetos da serialização, e recriá-los após a desserialização. O método <code>__getstate__()</code> define o que deve ser incluído na serialização. Se não sobrescrito, tenta serializar tudo que está no atributo <code>__dict__</code>. E o método <code>__setstate__()</code> define como é feita a desserialização. Sobrescrevendo-o, você pode passar informações adicionais na desserialização.</p>
+            <p>O seguinte exemplo exclui da serialização um atributo que referencia uma função lambda. Depois, reinicializa esse atributo na desserialização:</p>
+            <pre><code>import pickle
+
+class foobar:
+    def __init__(self):
+        self.a = 35
+        self.b = "test"
+        self.c = lambda x: x * x
+
+    def __getstate__(self):
+        attributes = self.__dict__.copy()
+        del attributes["c"]
+        return attributes
+
+    def __setstate__(self, state):
+        self.__dict__ = state
+        self.c = lambda x: x * x
+
+    def __str__(self):
+        return f"{{a:{self.a}, b:{self.b}, c:{self.c}}}"
+
+
+my_foobar_instance = foobar()
+my_pickle_string = pickle.dumps(my_foobar_instance)
+my_new_instance = pickle.loads(my_pickle_string)
+print(my_new_instance)</code></pre>
+
+            <p>Saída:</p>
+            <pre><code class="python-repl">{'a': 35, 'b': 'test', 'c': &lt;function foobar.__setstate__.&lt;locals>.&lt;lambda> at 0x000001A0A53220C0>}</code></pre>
+
+            <p>O método <code>__getstate__()</code></p>
+
+            <h4>Cuidados de segurança com <code>pickle</code></h4>
+            <p>O módulo <code>pickle</code> é útil para serializar e desserializar objetos em Python para salvar estados em disco ou transmiti-los pela rede. Porém, é importante notar que pode não ser seguro, pois pode executar código arbitrário durante o processo de desserialização. Portanto, evite desserializar dados de fontes não confiáveis ou transmitidos em redes inseguras. Recomenda-se usar bibliotecas como <code>hmac</code> para assinar os dados e evitar ataques do tipo <i>man-in-the-middle</i>.</p>
+        </div>
+        <div id="8-4-2-json">
+            <h3>O módulo <code>json</code></h3>
+            <p>JavaScript Object Notation (JSON) é um padrão comum de representação de dados, usado principalmente na web. O módulo <code>json</code> do Python possui as funções <code>dump</code>, <code>load</code>, <code>dumps</code> e <code>loads</code> equivalentes de <code>pickle</code>, mas para conversão de e para JSON, trabalhando com strings e não com bytes.</p>
+            <p>Apesar do O de Objetos, JSON só consegue representar dados, e não objetos com seus métodos. JSON é utilizado para armazenamento e troca (transmissão) de dados. Eis um exemplo de JSON:</p>
+            <pre><code class="json">{
+    "firstName": "Jane",
+    "lastName": "Doe",
+    "hobbies": ["running", "sky diving", "singing"],
+    "age": 35,
+    "email": null,
+    "verified": false,
+    "children": [
+        {
+            "firstName": "Alice",
+            "age": 6
+        },
+        {
+            "firstName": "Bob",
+            "age": 8
+        }
+    ]
+}</code></pre>
+            <p>Observe que Python tomou emprestado JSON para representar objetos <code>dict</code>.</p>
+            <p>Salve esse conteúdo em um arquivo <code>user.json</code>. Agora carregue-o com Python, faça alguma alteração e salve-o:</p>
+            <pre><code>import json
+
+print("\nCarregando JSON...")
+with open("user.json") as file:
+    data = json.load(file)
+    print("Nome:", data["firstName"], type(data["firstName"]))
+    print("Email:", data["email"], type(data["email"]))
+    print("Idade:", data["age"], type(data["age"]))
+    print("Confirmado:", data["verified"], type(data["verified"]))
+    print("Hobbies:", data["hobbies"], type(data["hobbies"]))
+    print("Primogênito:", data["children"][0], type(data["children"][0]))
+
+print("Atualizando alguns dados...")
+data["firstName"] = "John"
+data["verified"] = True
+data["hobbies"][1] = "coding"
+
+print("\nSalvando JSON...")
+with open("user.json", "w") as file:
+    json.dump(data, file, indent=2)</code></pre>
+            <p>Observe que objetos incorporados, como <code>dict</code> e <code>list</code> são automaticamente serializados e desserializados. Mas objetos de classes personalizadas não podem:</p>
+            <pre><code>class Example:
+    def __init__(self, a_number=35, a_string="hey", a_list=[1, 2, 3], a_dict={"first": "a", "second": 2, "third": [1, 2, 3]}, a_tuple=(22, 23)):
+        self.a_number = a_number
+        self.a_string = a_string
+        self.a_list = a_list
+        self.a_dict = a_dict
+        self.a_tuple = a_tuple
+
+
+obj = Example()
+json_string = json.dumps(obj)
+print(json_string)</code></pre>
+            <p>Ao executar, ocorrerá o erro <code>TypeError: Object of type Example is not JSON serializable</code>. Para serializar, ou codificar em JSON, um objeto, você deve "ensinar" o Python como fazer isso:</p>
+            <pre><code>def encode_example(obj):
+    if isinstance(obj, Example):
+        return obj.__dict__
+    return TypeError(f"Object of type '{obj.__class__.__name__}' is not JSON serializable")
+
+obj = Example()
+json_string = json.dumps(obj, default=encode_example)
+print(json_string)</code></pre>
+            <p>Saída:</p>
+            <pre><code class="python-repl">{"a_number": 35, "a_string": "hey", "a_list": [1, 2, 3], "a_dict": {"first": "a", "second": 2, "third": [1, 2, 3]}, "a_tuple": [22, 23]}</code></pre>
+            <p>O parâmetro <code>default</code> de <code>json.dumps</code> recebe uma função, que por sua vez, recebe o objeto a ser codificado em JSON, e retorna uma versão codificável em JSON do objeto, como um <code>dict</code>.</p>
+            <p>Por outro lado, se tentarmos decodificar JSON, mesmo que seja de objetos Python codificados, o resultado será um <code>dict</code>:</p>
+            <pre><code>obj = Example()
+json_string = json.dumps(obj, default=encode_example)
+decoded_obj = json.loads(json_string)
+print(type(decoded_obj))
+print(decoded_obj)</code></pre>
+            <p>Saída:</p>
+            <pre><code class="python-repl">&lt;class 'dict'>
+{'a_number': 35, 'a_string': 'hey', 'a_list': [1, 2, 3], 'a_dict': {'first': 'a', 'second': 2, 'third': [1, 2, 3]}, 'a_tuple': [22, 23]}</code></pre>
+            <p>Se quisermos converter um JSON em um objeto personalizado, semelhantemente, podemos passar uma função de decodificação à <code>json.load()</code>:</p>
+            <pre><code>def decode_example(dct):
+    # se possui apenas as chaves esperadas por um Example
+    if set(dct.keys()) == {"a_number", "a_string", "a_list", "a_dict", "a_tuple"}:
+        return Example(
+            dct["a_number"],
+            dct["a_string"],
+            dct["a_list"],
+            dct["a_dict"],
+            tuple(dct["a_tuple"]),
+        )
+    # senão, retorna como veio
+    return dct
+
+obj = Example()
+json_string = json.dumps(obj, default=encode_example)
+decoded_obj = json.loads(json_string, object_hook=decode_example)
+print(type(decoded_obj))
+print(decoded_obj.__dict__)</code></pre>
+            <p>Saída:</p>
+            <pre><code class="python-repl">&lt;class '__main__.Example'>
+{'a_number': 35, 'a_string': 'hey', 'a_list': [1, 2, 3], 'a_dict': {'first': 'a', 'second': 2, 'third': [1, 2, 3]}, 'a_tuple': (22, 23)}</code></pre>
+            <p>A função decodificadora sabe apenas decodificar objetos <code>Example</code>. Por isso, na linha 3, verificamos se <code>dct</code> veio apenas com as chaves correspondentes aos atributos de <code>Example</code>. Caso contrário, retorna <code>dct</code> sem alterações. Isso é necessário pois essa função é usada para cada objeto JSON dentro da string sendo decodificada. No nosso caso, a string sendo decodificada é um objeto <code>Example</code>, que possui um objeto <code>dict</code> como atributo. Este objeto também será decodificado usando a mesma função.</p>
+        </div>
+        <div id="8-4-3-referencias">
+            <h3>Referências</h3>
+            <p>Além do livro, retirei bastante material desses artigos:</p>
+            <ul>
+                <li><a href="https://realpython.com/python-pickle-module/">https://realpython.com/python-pickle-module/</a></li>
+                <li><a href="https://realpython.com/python-json/">https://realpython.com/python-json/</a></li>
+            </ul>
+        </div>
+        <div id="8-4-4-exercises">
+            <h3>8.4.4 Exercícios</h3>
+            <ol class="excs">
+                <li> Trabalhando com <code>pickle</code>
+                    <ol type="a">
+                        <li>Em um arquivo, crie uma classe <code>Endereco</code>, com os atributos logradouro, número, bairro, cep, cidade e estado. Crie também uma classe <code>Pessoa</code> com atributos nome, data de nascimento (do tipo <code>datetime</code>) e endereço (do tipo <code>Endereco</code>).</li>
+                        <li>Em outro arquivo, implemente um script que carregue pessoas e endereços de um arquivo com esses objetos serializados com <code>pickle</code>. O script deve permitir ao usuário adicionar e excluir endereços e pessoas, além de encerrar o script. Ao encerrar o script, os objetos devem ser salvos para que possam ser carregados em execuções futuras do script.</li>
+                    </ol>
+                </li>
+                <li>Refaça o exercício anterior, mas usando <code>json</code> em vez de <code>pickle</code>. (Observação: não decodificar como dicionários, mas como objetos <code>Pessoa</code> e <code>Endereco</code>).</li>
+                <li>Implemente um script que pegue um arquivo com os objetos do exercício 1 serializados com <code>pickle</code>, e salve um arquivo com os objetos codificados em JSON, compatível com o exercício 2.</li>
+                <li>Implemente um script que pegue um arquivo com os objetos do exercício 2 codificados com <code>json</code>, e salve um arquivo com os objetos serializados com <code>pickle</code>, compatível com o exercício 1.</li>
+                <!-- Classe `Produto` com atributos `codigo`, `nome`, `preco` e `estoque`.
+                Classe `Livro` com atributos título, autor e ano de publicação.
+                Classe `Funcionario` com atributos nome, cargo e salário.
+                Classe `Aluno` com atributos `nome`, `idade`, `curso` e `notas`, sendo `notas` uma lista de notas. -->
+            </ol>
+        </div>
+    </div>
+    <div id="case-study">
+        <h2>8.5 Estudo de caso</h2>
+
+        <h3>Template Engine ingênua</h3>
+        <p>Vamos criar uma <i>template engine</i> ingênua usando expressões regulares em Python. Ela processará (parsing) um arquivo HTML usado como modelo (<i>template</i>), gerando outro arquivo HTML, substituindo certas diretivas do modelo pelo seus respectivos valores. Essa é uma tarefa complexa que podemos fazer com expressões regulares, portanto, uma versão completa, como as usadas em frameworks web, exigiria um mecanismo de processamento (parsing) mais avançado.</p>
+        <p>O arquivo template pode conter diretivas no formato <code>/** &lt;directive> &lt;data> **/</code>, onde <code>data</code> é um argumento opcional e <code>directive</code> pode ser uma das seguintes:</p>
+        <ul>
+            <li><code>include</code>: Copia o conteúdo do arquivo <code>data</code> aqui. Considere que <code>data</code> seja apenas o nome do arquivo a ser incluído, e que seu caminho completo esteja na mesma pasta do arquivo template.</li>
+            <li><code>variable</code>: Insere o conteúdo da variável <code>data</code> aqui.</li>
+            <li><code>loopover</code>: Repete o conteúdo do laço para cada item da lista <code>data</code>.</li>
+            <li><code>endloop</code>: Sinaliza o fim do conteúdo do laço.</li>
+            <li><code>loopvar</code>: O item atual da lista dentro do laço.</li>
+        </ul>
+        <p>Considere o seguinte exemplo do arquivo template <code>my_template.html</code> com essas diretivas:</p>
+        <pre><code class="html">/** include header.html **/
+ 
+&lt;h1>This is the title of the front page&lt;/h1>
+ 
+/** include menu.html **/
+ 
+&lt;p>My name is /** variable name **/.
+This is the content of my front page. It goes below the menu.&lt;/p>
+ 
+&lt;table>
+    &lt;tr>&lt;th>Favourite Books&lt;/th>&lt;/tr>
+ 
+    /** loopover book_list **/
+    &lt;tr>&lt;td>/** loopvar **/&lt;/td>&lt;/tr>
+    /** endloop **/
+&lt;/table>
+ 
+Copyright © Today
+
+/** include footer.html **/</code></pre>
+        <p>Nesse estudo de caso, as variáveis serão extraídas de um arquivo de contexto, que é um arquivo json, onde cada variável é uma chave do json. Considere o seguinte exemplo de arquivo de contexto <code>my_context.json</code>:</p>
+        <pre><code class="json">{
+    "name": "Dusty",
+    "book_list": [
+        "Thief Of Time",
+        "The Thief",
+        "Snow Crash",
+        "Lathe Of Heaven"
+    ]
+}</code></pre>
+
+        <p>Considere o seguinte exemplo para <code>header.html</code></p>
+        <pre><code class="html">&lt;html>
+&lt;body></code></pre>
+        <p>Considere o seguinte exemplo para <code>menu.html</code></p>
+        <pre><code class="html">&lt;a href="link1.html">First Link&lt;/a>
+&lt;a href="link2.html">Second Link&lt;/a></code></pre>
+        <p>Considere o seguinte exemplo para <code>footer.html</code></p>
+        <pre><code class="html">&lt;/body>
+&lt;/html></code></pre>
+
+        <p>O arquivo <code>pagina.html</code> de saída seria:</p>
+        <pre><code class="html">&lt;html>
+&lt;body>
+ 
+&lt;h1>This is the title of the front page&lt;/h1>
+ 
+&lt;a href="link1.html">First Link&lt;/a>
+&lt;a href="link2.html">Second Link&lt;/a>
+ 
+&lt;p>My name is Dusty.
+This is the content of my front page. It goes below the menu.&lt;/p>
+ 
+&lt;table>
+    &lt;tr>&lt;th>Favourite Books&lt;/th>&lt;/tr>
+ 
+    &lt;tr>&lt;td>Thief Of Time&lt;/td>&lt;/tr>
+    &lt;tr>&lt;td>The Thief&lt;/td>&lt;/tr>
+    &lt;tr>&lt;td>Snow Crash&lt;/td>&lt;/tr>
+    &lt;tr>&lt;td>Lathe Of Heaven&lt;/td>&lt;/tr>
+&lt;/table>
+ 
+Copyright © Today
+ 
+&lt;/body>
+&lt;/html></code></pre>
+
+        <h3>Implementação da template engine</h3>
+
+        <p>Vamos começar a lógica de processamento de nossa template engine ingênua:</p>
+        <pre><code>import re
+import sys
+import json
+from pathlib import Path
+
+DIRECTIVE_RE = re.compile(r"/\*\*\s*"
+                          r"(include|variable|loopover|endloop|loopvar)"
+                          r"\s*([^ *]*)"
+                          r"\s*\*\*/")
+
+class TemplateEngine:
+    def __init__(self, infilename, outfilename, contextfilename):
+        self.template = open(infilename).read()
+        self.working_dir = Path(infilename).absolute().parent
+        self.pos = 0
+        self.outfile = open(outfilename, "w")
+        with open(contextfilename) as contextfile:
+            self.context = json.load(contextfile)
+
+    def process(self):
+        print("TO-DO...")
+
+if __name__ == "__main__":
+    infilename, outfilename, contextfilename = sys.argv[1:]
+    engine = TemplateEngine(infilename, outfilename, contextfilename)
+    engine.process()</code></pre>
+        <p>A constante <code>DIRECTIVE_RE</code> é um padrão para encontrar uma diretiva. Cada diretiva será substituída por um valor, com exceção das diretivas <code>loopover</code> e <code>endloop</code>, que apenas controlam o início e o final do loop. O arquivo template será varrido do início ao fim, procurando por diretivas, e o <code>self.pos</code> indica o caractere atual do arquivo onde está a varredura. O <code>self.working_dir</code> é o caminho da pasta onde o arquivo template e os demais arquivos HTML se encontram.</p>
+        <p>Nossa template engine funciona pela linha de comando, onde são passados, conforme a linha 24, o caminho para o arquivo template, o arquivo de saída e o arquivo de contexto. Relembrando que, para as diretivas <code>include</code>, os arquivos a serem incluídos estarão na mesma pasta do arquivo template, cujo caminho está no atributo <code>self.working_dir</code>.</p>
+        <p>Segue a implementação do método <code>process</code>:</p>
+        <pre id="process-method"><code>    def process(self):
+        match = DIRECTIVE_RE.search(self.template, pos=self.pos)
+        while match:
+            self.outfile.write(self.template[self.pos : match.start()])
+            directive, argument = match.groups()
+            method_name = "process_{}".format(directive)
+            getattr(self, method_name)(match, argument)
+            match = DIRECTIVE_RE.search(self.template, pos=self.pos)
+        self.outfile.write(self.template[self.pos :])
+        self.outfile.close()</code></pre>
+        <p>Optamos por buscar as diretivas através do método <code>search</code> (linhas 2 e 8), já que podemos especificar a posição inicial da busca. Assim, à medida que buscamos a próxima diretiva (linha 8), já a substituímos pela string adequada através da invocação do método apropriado (linha 7) e vamos gravando no arquivo de saída (linha 4).</p>
+        <p>A linha 7 invoca um método específico para cada diretiva, já que a lógica de substituição varia para cada uma delas. Esse método recebe o <code>match</code> e um possível argumento <code>argument</code>, realiza o processamento e avança o ponteiro <code>pos</code>, como veremos a seguir. A dinamicidade do Python possibilita essa abordagem, em vez de uma série de if-elses ou switches para invocar o método apropriado.</p>
+        <p>Vamos começar da diretiva <code>variable</code>:</p>
+        <pre><code>    def process_variable(self, match, argument):
+        self.outfile.write(self.context.get(argument, ""))
+        self.pos = match.end()</code></pre>
+        <p>Ao processar uma variável, devemos obter seu valor do dicionário de contexto. Nos damos ao trabalho de tratar o caso de uma variável inexistente, devolvendo uma string vazia. O valor da variável, então, é escrito no arquivo de saída, e a posição avança até o final da diretiva no arquivo template.</p>
+        <p>As diretivas do loop são as mais complicadas, pois precisamos compartilhar o estado do loop entre elas. Para simplificar, lidaremos com esse caso usando atributos extras na própria classe:</p>
+        <pre><code>    def process_loopover(self, match, argument):
+            self.loop_list = self.context.get(argument, [])
+            self.loop_index = 0
+            self.pos = self.loop_beginning = match.end()
+        
+    def process_endloop(self, match, argument):
+        self.loop_index += 1
+        if self.loop_index &lt; len(self.loop_list):
+            self.pos = self.loop_beginning
+        else:
+            self.pos = match.end()
+            
+    def process_loopvar(self, match, argument):
+        print("TO-DO")</code></pre>
+        <p>O método <code>process_loopover</code> inicializa o estado do loop usando três atributos. O atributo <code>self.loop_list</code> é a lista extraída do dicionário de contexto. O atributo <code>self.loop_index</code> é o índice do item atual da lista dentro do loop. E <code>self.loop_beginning</code> é a posição no arquivo template onde o loop começa.</p>
+        <p>O método <code>process_endloop</code> verifica se o loop deve continuar ou encerrar. O <code>if</code> da linha 8 é o caso quando ainda faltam itens na lista para serem processados. Neste caso, a posição no arquivo template volta para o início do loop. Caso todos os itens tenham sido processados, no <code>else</code> da linha 10, a posição no arquivo template avança para depois do loop, que é o fim da diretiva <code>endloop</code>.</p>
+        <p>O método <code>process_loopvar</code> é deixado como tarefa, mas semelhantemente ao método <code>process_variable</code>, simplesmente vai escrever o item atual da lista no arquivo de saída. Não se esqueça de, após processar uma diretiva, avançar a posição atual no arquivo template (atributo <code>self.pos</code>) para depois do final da diretiva processada.</p>
+        <p>Por fim, o tratamento da diretiva <code>include</code>, que também será deixada como tarefa:</p>
+        <pre><code>    def process_include(self, match, argument):
+        print("TO-DO")</code></pre>
+        <p>Esse método deve carregar o conteúdo do arquivo cujo nome está no parâmetro <code>argument</code>, e gravar esse conteúdo no arquivo de saída. Mais uma vez, <code>argument</code> é só o nome do arquivo a ser incluído no arquivo de saída, para abri-lo, deve passar o caminho completo, que está no atributo <code>self.working_dir</code>.</p>
+        <h3>Testando</h3>
+        <p>Considere que o arquivo <code>naive_template_engine.py</code> contenha teu script, e esteja dentro da mesma pasta dos outros arquivos. Você executa esse script pela linha de comando, passando argumentos a ele, da seguinte forma:</p>
+        <pre><code class="bash">python naive_template_engine.py my_template.html page.html my_context.json</code></pre>
+
+        <p>Parabéns! Você implementou tua primeira template engine! E espero que seja a última, pois já existem muitas no mercado, e você não precisa reinventar a roda. Além disso, nossa template engine ingênua, conforme seu nome de batismo, é bem simples, destinada apenas para fins didáticos, e também muito frágil. Por exemplo, ela não suporta laços aninhados. Poderíamos realizar melhorias de desempenho e até mesmo adicionar mais verificações de erros para torná-la mais robusta. Mas para os propósitos desta aula, já está mais do que o suficiente!</p>
+    </div>
+    <div id="exercicios">
+        <h2>Exercícios</h2>
+        <ol class="excs">
+            <li>O problema da linha 7 no método <a href="#process-method"><code>process</code></a>é tentar invocar um método inválido quando uma diretiva inexistente é informada. Proponha e implemente uma tratativa de erro. Sugestão: uma estratégia seria lançar uma exceção, outra estratégia, seria ignorar essa diretiva. Qual você escolheria, e por quê?</li>
+            <li>Implemente os métodos <code>process_loopvar</code> e <code>process_include</code>, que ficaram faltando.</li>
+            <li>Alguns métodos como <code>process_endloop</code> recebem <code>argument</code> sem nem precisar dele, enquanto que os que o utilizam, também poderiam obter seu valor diretamente do objeto <code>match</code>, de onde ele foi tirado. Refatore o código retirando qualquer referência à variável <code>argument</code>.</li>
+            <li>Comentários são primariamente destinados à documentação do desenvolvedor e não são necessários para o cliente que recebe a página HTML. Podemos remover comentários do HTML antes de enviá-lo ao cliente, economizando, assim, o uso de banda do servidor. Implemente essa funcionalidade na nossa <i>template engine</i> ingênua.</li>
+            <li><b>Desafio:</b> Adicione as diretivas <code>/** if &lt;var> **/</code> e <code>/** endif **/</code>, que, caso o contexto tenha a variável <code>&lt;var></code>, grave o conteúdo entre essas diretivas no arquivo de saída.</li>
+        </ol>
+    </div>
+</div>
