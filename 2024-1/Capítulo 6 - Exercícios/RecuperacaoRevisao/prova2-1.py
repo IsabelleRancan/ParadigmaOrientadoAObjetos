@@ -5,8 +5,10 @@ def combinar_listas(l1, l2):
         raise ValueError("As listas são de tamanhos diferentes!")
     return list(zip(l1, l2))
 
-#teste-certo
 
+
+#EXERCÍCIO 1
+#teste-certo
 lista1 = ["ana", "banana"]
 lista2 = [1, 3]
 
@@ -14,11 +16,13 @@ lista_combinada = combinar_listas(lista1, lista2)
 print(lista_combinada)
     
 #teste-errado
-
 lista1 = ["ana", "banana", "joana"]
 lista2 = [1, 3]
 
-lista_combinada = combinar_listas(lista1, lista2)
-print(lista_combinada)
+try: 
+    lista_combinada = combinar_listas(lista1, lista2)
+    print(lista_combinada)
 
-#ex2 - 
+except ValueError as e: 
+    print(f"Erro: ", e)
+ 
