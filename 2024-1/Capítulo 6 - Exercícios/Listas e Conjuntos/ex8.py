@@ -7,10 +7,21 @@ def pares_palavras():
     n = int(input("Digite um número: "))
 
     for i in range(n):
-        palavra1 = str(input("Digite a primeira palavra: ")).lower
-        palavra2 = str(input("Digite a segunda palavra: ")).lower
+        palavra1 = str(input("Digite a primeira palavra: ")).lower()
+        palavra2 = str(input("Digite a segunda palavra: ")).lower()
 
-        palavra_1 = set(palavra1.slpit())
-        palavra_2 = set(palavra2.slpit())
+        palavra_1 = list(palavra1.replace(" ", ""))
+        palavra_2 = list(palavra2.replace(" ", ""))
 
-        if 
+        palavra_1 = sorted(palavra_1)
+        palavra_2 = sorted(palavra_2)
+
+        if  palavra_1 == palavra_2: 
+            print('S')
+        else:
+            print('N')
+            
+        print(f"{palavra_1}")
+        print(f"{palavra_2}")
+
+pares_palavras()
