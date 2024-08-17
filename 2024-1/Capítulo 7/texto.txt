@@ -1,0 +1,3 @@
+Sobrecarga de métodos e funções é quando temos vários métodos (ou funções) com o mesmo nome, mas com diferentes tipos e 
+quantidades de parâmetros. Um exemplo de utilização pode ser um método que envia email para um contato padrão e outro método 
+que envia email para um contato passado como argumento.
