@@ -1,0 +1,5 @@
+Este e o teste usando EOF 
+Estou tentando estudar e esse novo codigo possui duas coisas diferentes.
+
+1 - Esse codigo possi o modo x que lanca uma excecao se o nome do arquivo ja existir
+2 - Estamos usando EOF, ou seja, para sair do arquivo, precisamos usar ctrl + z 
