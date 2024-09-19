@@ -2,7 +2,7 @@
 # Retorna a concatenação de todas as strings recebidas.
 
 def concat(*args):
-    c = ",".join(args) #unando , como critério de junção
+    c = ",".join(args) #usando , como critério de junção
     return c
 
 print(concat('a','b','c','d'))
