@@ -1009,3 +1009,62 @@ Cartola - Corra e Olhe o Céu (13:12)</pre>
             </ol>
         </div>
     </div>
+
+    <h2>Metacaracteres e Regex</h2>
+
+    <h3>1. Metacaracteres Básicos de Regex</h3>
+    <ul>
+        <li><code>.</code>: Corresponde a qualquer caractere, exceto uma nova linha.</li>
+        <li><code>\d</code>: Corresponde a um dígito (0-9).</li>
+        <li><code>\w</code>: Corresponde a um caractere alfanumérico (letras e números) e sublinhados.</li>
+        <li><code>\s</code>: Corresponde a um espaço em branco (espaços, tabs, novas linhas).</li>
+    </ul>
+
+    <h3>2. Quantificadores</h3>
+    <ul>
+        <li><code>*</code>: Corresponde a zero ou mais ocorrências do padrão anterior.</li>
+        <li><code>+</code>: Corresponde a uma ou mais ocorrências do padrão anterior.</li>
+        <li><code>?</code>: Corresponde a zero ou uma ocorrência do padrão anterior.</li>
+        <li><code>{n}</code>: Corresponde a exatamente "n" ocorrências.</li>
+        <li><code>{n,m}</code>: Corresponde a entre "n" e "m" ocorrências.</li>
+    </ul>
+
+    <h3>3. Âncoras</h3>
+    <ul>
+        <li><code>^</code>: Corresponde ao início da string.</li>
+        <li><code>$</code>: Corresponde ao final da string.</li>
+        <li><code>\b</code>: Corresponde a uma fronteira de palavra (início ou fim de uma palavra).</li>
+    </ul>
+
+    <h3>4. Grupos e Captura</h3>
+    <ul>
+        <li><code>()</code>: Agrupa padrões e permite capturar partes da correspondência.</li>
+        <li><code>(?:...)</code>: Agrupa sem capturar (usado quando você não quer guardar o valor correspondente).</li>
+        <li><code>\1, \2...</code>: Referência a grupos anteriores capturados na regex.</li>
+    </ul>
+
+    <h3>5. Alternância (OR)</h3>
+    <ul>
+        <li><code>|</code>: "Ou" lógico. Por exemplo, <code>a|b</code> corresponde a "a" ou "b".</li>
+    </ul>
+
+    <h3>6. Escapando Caracteres Especiais</h3>
+    <ul>
+        <li><code>\</code>: Usado para escapar caracteres especiais como <code>.</code> ou <code>?</code>. Por exemplo, <code>\.</code> corresponde a um ponto literal.</li>
+    </ul>
+
+    <h3>7. Classes de Caracteres</h3>
+    <ul>
+        <li><code>[abc]</code>: Corresponde a qualquer caractere dentro dos colchetes (nesse caso, "a", "b" ou "c").</li>
+        <li><code>[^abc]</code>: Corresponde a qualquer caractere que não seja "a", "b" ou "c".</li>
+        <li><code>[a-zA-Z]</code>: Corresponde a qualquer letra minúscula ou maiúscula.</li>
+    </ul>
+
+    <h3>8. Referências à Função re</h3>
+    <ul>
+        <li><code>re.match()</code>: Tenta corresponder ao padrão no início da string.</li>
+        <li><code>re.search()</code>: Pesquisa a string para encontrar a primeira ocorrência do padrão.</li>
+        <li><code>re.findall()</code>: Retorna todas as correspondências encontradas na string como uma lista.</li>
+        <li><code>re.fullmatch()</code>: Verifica se toda a string corresponde ao padrão.</li>
+        <li><code>re.sub()</code>: Substitui as correspondências pelo valor desejado.</li>
+    </ul>
